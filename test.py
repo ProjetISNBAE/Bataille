@@ -13,8 +13,10 @@ casebatx=0
 casebaty=0
 ships=[]
 shipsai=[]
-totalhits=0
-hits=0
+aitotalhits=0
+aihits=0
+userhits=0
+usertotalhits=0
 #==============================================================================
 
 master = tk.Tk()
@@ -372,18 +374,32 @@ def placeboatsai():
        
     
 
-def hit():
-    global hits
-    global totalhits
-    a=0
-    for i in range(9):
-        for j in range(9):
-            if cases[i][j].case_attaquee==True and cases[i][j].bateau==True:
-                a=a+1
-    totalhits=a
-    if totalhits==hits+1:
-        hits=hits+1
-        return True
+def hit(liste):
+    if liste==cases:
+        global aihits
+        global aitotalhits
+        a=0
+        for i in range(9):
+            for j in range(9):
+                if cases[i][j].case_attaquee==True and cases[i][j].bateau==True:
+                    a=a+1
+        aitotalhits=a
+        if aitotalhits==aihits+1:
+            aihits=aihits+1
+            return True
+            
+    elif liste==caseadversaire:
+        global userhits
+        global usertotalhits
+        a=0
+        for i in range(9):
+            for j in range(9):
+                if caseadversaire[i][j].case_attaquee==True and caseadversaire[i][j].bateau==True:
+                    a=a+1
+        usertotalhits=a
+        if usertotalhits==userhits+1:
+            userhits=userhits+1
+            return True
     
 
 def aiattack():
@@ -556,7 +572,7 @@ def aiattack():
         except IndexError:
             pass    
         
-        if hit()==True:
+        if hit(cases)==True:
             cadre.after(300, aiattack)
         else:
             player_turn==True 
