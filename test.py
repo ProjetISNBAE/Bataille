@@ -579,7 +579,12 @@ def aiattack():
             information.itemconfigure(1, text='It is your turn to play.')
     else:
         information.itemconfigure(1, text='It is your turn to play.')
-
+    if aitotalhits==21:
+        player_turn=0
+        print("you lost")
+    if usertotalhits==21:
+        player_turn=0
+        print("you won")
 
 caseadversaire=[]
 cases=[]
