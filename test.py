@@ -1,6 +1,5 @@
 import tkinter as tk
 import random
-import time
 #==============================================================================
 taillejeu="1080x1080"
 hauteurcadre=800
@@ -13,10 +12,8 @@ casebatx=0
 casebaty=0
 ships=[]
 shipsai=[]
-aitotalhits=0
-aihits=0
-userhits=0
-usertotalhits=0
+totalhits=0
+hits=0
 #==============================================================================
 
 master = tk.Tk()
@@ -188,18 +185,15 @@ class ship:
                     return False
         
     def projet(self, x,y, liste):
-        try:
-            for i in range(self.length):
-                if self.orientation=='S':  
-                    self.cases(self.projection,x,y+i, liste)
-                elif self.orientation=='E':
-                    self.cases(self.projection,x-i,y, liste)
-                elif self.orientation=='N':
-                    self.cases(self.projection,x,y-i, liste)
-                elif self.orientation=='W':
-                    self.cases(self.projection,x+i,y, liste)
-        except IndexError:
-            return False
+        for i in range(self.length):
+            if self.orientation=='S':  
+                self.cases(self.projection,x,y+i, liste)
+            elif self.orientation=='E':
+                self.cases(self.projection,x-i,y, liste)
+            elif self.orientation=='N':
+                self.cases(self.projection,x,y-i, liste)
+            elif self.orientation=='W':
+                self.cases(self.projection,x+i,y, liste)
                     
     def placement(self,x,y, liste):
         for i in range(self.length):
@@ -215,10 +209,6 @@ class ship:
             elif self.orientation=='W':
                 liste[x+i][y].boat()
                 self.cases(self.endroits,x+i,y, liste)
-                
-    def placementai(self, liste):
-        for i in range(self.length):
-            self.projection[i].boat()
                     
     def cases(self,liste,x,y, liste2):
         liste.append(liste2[x][y])
@@ -229,7 +219,22 @@ class ship:
             if self.endroits[i].case_attaquee==False:
                 level=level+1
         return level/self.length
+ 
 
+def rancoord(): #renvoie 2 chiffres random
+    a=random.randrange(0,10,1)
+    b=random.randrange(0,10,1)
+    return a,b
+                  
+def ranai():    #renvoie un chiffre random entre 1 et 4
+    return random.randrange(1,5,1)
+                  
+def attacked_all(): #check si toutes les cases ont été attaqué
+    for i in range(9):
+        for j in range(9):
+            if cases[i][j].case_attaquee==False:
+                return False
+    return True
 
         
 class ai:
@@ -266,9 +271,9 @@ class ai:
             
             
     def check_surrounding(self): #check s'il n'y a pas de bateau autour
-        xcoordinate=[-1,0,0,+1,0]
-        ycoordinate=[0,+1,-1,0,0]
-        for i in range(5):
+        xcoordinate=[-1,0,0,+1]
+        ycoordinate=[0,+1,-1,0]
+        for i in range(4):
             try:
                 adjacent_case=caseadversaire[(self.x+xcoordinate[i])][self.y+(ycoordinate[i])]
                 if adjacent_case.bateau==True:
@@ -306,6 +311,8 @@ class ai:
     def color(self):
         global player_turn 
         couleur="white"
+        if self.bateau==True:
+            couleur="grey"
         if self.case_attaquee and self.bateau:
             couleur="red"
             player_turn=True
@@ -313,21 +320,8 @@ class ai:
             couleur="blue"
             player_turn=False
         return couleur
-        
-def rancoord(): #renvoie 2 chiffres random
-    a=random.randrange(0,10,1)
-    b=random.randrange(0,10,1)
-    return a,b
-                  
-def ranai():    #renvoie un chiffre random entre 1 et 4
-    return random.randrange(1,5,1)
-                  
-def attacked_all(): #check si toutes les cases ont été attaqué
-    for i in range(9):
-        for j in range(9):
-            if cases[i][j].case_attaquee==False:
-                return False
-                
+    
+    
 def random_orientation(): 
     random=ranai()
     if random==1:
@@ -354,56 +348,38 @@ def placeboatsai():
             while  shipsai[i].check_placement(x,y)==False:
                 del shipsai[i].projection[:]
                 x,y=rancoord()
-                shipsai[i].projection.append([shipsai[i].projet(x,y,caseadversaire)])
+                shipsai[i].projection.append(shipsai[i].projet(x,y,caseadversaire))
         shipsai[i].projection.pop()
+        print(shipsai[i].projection)
    
     for j in range(len(shipsai)):
-        for k in range(len(shipsai[j].projection)):
+        for k in range(1,len(shipsai[j].projection),1):
             while shipsai[j].check_placement(x,y)==False or shipsai[j].projection[k].check_surrounding()==False:
                     shipsai[j].orientation=random_orientation()
                     del shipsai[j].projection[:]
                     x,y=rancoord()
-                    shipsai[j].projection.append([shipsai[j].projet(x,y,caseadversaire)])
+                    shipsai[j].projection.append(shipsai[j].projet(x,y,caseadversaire))
                     shipsai[j].projection.pop()
             
-        shipsai[j].placementai(caseadversaire)    
-
-                                
+        print(shipsai[j].projection)
+        shipsai[j].placement(x,y,caseadversaire)   
         
-
-       
-    
-
-def hit(liste):
-    if liste==cases:
-        global aihits
-        global aitotalhits
-        a=0
-        for i in range(9):
-            for j in range(9):
-                if cases[i][j].case_attaquee==True and cases[i][j].bateau==True:
-                    a=a+1
-        aitotalhits=a
-        if aitotalhits==aihits+1:
-            aihits=aihits+1
-            return True
-            
-    elif liste==caseadversaire:
-        global userhits
-        global usertotalhits
-        a=0
-        for i in range(9):
-            for j in range(9):
-                if caseadversaire[i][j].case_attaquee==True and caseadversaire[i][j].bateau==True:
-                    a=a+1
-        usertotalhits=a
-        if usertotalhits==userhits+1:
-            userhits=userhits+1
-            return True
+        
+def hit():
+    global hits
+    global totalhits
+    a=0
+    for i in range(9):
+        for j in range(9):
+            if cases[i][j].case_attaquee==True and cases[i][j].bateau==True:
+                a=a+1
+    totalhits=a
+    if totalhits==hits+1:
+        hits=hits+1
+        return True
     
 
 def aiattack():
-    time.sleep(0.3)
     global sens
     global direction
     global casebatx
@@ -572,7 +548,7 @@ def aiattack():
         except IndexError:
             pass    
         
-        if hit(cases)==True:
+        if hit()==True:
             cadre.after(300, aiattack)
         else:
             player_turn==True 
@@ -808,5 +784,5 @@ master.bind("<Button-1>", changement)
 #Bouton2 = tk.Button(master, text = 'Placer bateau2', command = placer_boats).grid(row=2, column=1)
 ai = tk.Button(master, text = 'ai', command = aiattack).grid(row=0, column=1)
 #play=tk.Button(master, text="Jouer", width="10", height="2", command=gamemode).grid(column=2, row=0)
-placeboatsai()
+#placeboatsai()
 master.mainloop()
