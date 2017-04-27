@@ -362,7 +362,7 @@ def placeboatsai():
                     shipsai[j].projection.pop()
             
         print(shipsai[j].projection)
-        shipsai[j].placement(x,y,caseadversaire)   
+        shipsai[j].placementai(x,y,caseadversaire)    
         
         
 def hit():
