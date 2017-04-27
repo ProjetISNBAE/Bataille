@@ -1,5 +1,6 @@
 import tkinter as tk
 import random
+import time
 #==============================================================================
 taillejeu="1080x1080"
 hauteurcadre=800
@@ -185,15 +186,18 @@ class ship:
                     return False
         
     def projet(self, x,y, liste):
-        for i in range(self.length):
-            if self.orientation=='S':  
-                self.cases(self.projection,x,y+i, liste)
-            elif self.orientation=='E':
-                self.cases(self.projection,x-i,y, liste)
-            elif self.orientation=='N':
-                self.cases(self.projection,x,y-i, liste)
-            elif self.orientation=='W':
-                self.cases(self.projection,x+i,y, liste)
+        try:
+            for i in range(self.length):
+                if self.orientation=='S':  
+                    self.cases(self.projection,x,y+i, liste)
+                elif self.orientation=='E':
+                    self.cases(self.projection,x-i,y, liste)
+                elif self.orientation=='N':
+                    self.cases(self.projection,x,y-i, liste)
+                elif self.orientation=='W':
+                    self.cases(self.projection,x+i,y, liste)
+        except IndexError:
+            return False
                     
     def placement(self,x,y, liste):
         for i in range(self.length):
@@ -212,8 +216,8 @@ class ship:
                 
     def placementai(self, liste):
         for i in range(self.length):
-            self.projection[i].boat()  
-            
+            self.projection[i].boat()
+                    
     def cases(self,liste,x,y, liste2):
         liste.append(liste2[x][y])
         
@@ -223,22 +227,7 @@ class ship:
             if self.endroits[i].case_attaquee==False:
                 level=level+1
         return level/self.length
- 
 
-def rancoord(): #renvoie 2 chiffres random
-    a=random.randrange(0,10,1)
-    b=random.randrange(0,10,1)
-    return a,b
-                  
-def ranai():    #renvoie un chiffre random entre 1 et 4
-    return random.randrange(1,5,1)
-                  
-def attacked_all(): #check si toutes les cases ont été attaqué
-    for i in range(9):
-        for j in range(9):
-            if cases[i][j].case_attaquee==False:
-                return False
-    return True
 
         
 class ai:
@@ -275,9 +264,9 @@ class ai:
             
             
     def check_surrounding(self): #check s'il n'y a pas de bateau autour
-        xcoordinate=[-1,0,0,+1]
-        ycoordinate=[0,+1,-1,0]
-        for i in range(4):
+        xcoordinate=[-1,0,0,+1,0]
+        ycoordinate=[0,+1,-1,0,0]
+        for i in range(5):
             try:
                 adjacent_case=caseadversaire[(self.x+xcoordinate[i])][self.y+(ycoordinate[i])]
                 if adjacent_case.bateau==True:
@@ -303,20 +292,15 @@ class ai:
         if player_turn==True:
             case.attacked(self)
             print(self.case_attaquee and self.bateau)
-            if self.case_attaquee and self.bateau:
-                player_turn=True
-            else:
-                player_turn=False
-                information.itemconfigure(1, text='It is not your turn to play.')
-                cadre.after(300, aiattack)
+            player_turn=False
+            information.itemconfigure(1, text='It is not your turn to play.')
+            cadre.after(300, aiattack)
         else:
             information.itemconfigure(1, text='It is not your turn to play.')
         
     def color(self):
         global player_turn 
         couleur="white"
-        if self.bateau==True:
-            couleur="grey"
         if self.case_attaquee and self.bateau:
             couleur="red"
             player_turn=True
@@ -324,8 +308,21 @@ class ai:
             couleur="blue"
             player_turn=False
         return couleur
-    
-    
+        
+def rancoord(): #renvoie 2 chiffres random
+    a=random.randrange(0,10,1)
+    b=random.randrange(0,10,1)
+    return a,b
+                  
+def ranai():    #renvoie un chiffre random entre 1 et 4
+    return random.randrange(1,5,1)
+                  
+def attacked_all(): #check si toutes les cases ont été attaqué
+    for i in range(9):
+        for j in range(9):
+            if cases[i][j].case_attaquee==False:
+                return False
+                
 def random_orientation(): 
     random=ranai()
     if random==1:
@@ -354,7 +351,6 @@ def placeboatsai():
                 x,y=rancoord()
                 shipsai[i].projection.append([shipsai[i].projet(x,y,caseadversaire)])
         shipsai[i].projection.pop()
-        print(shipsai[i].projection)
    
     for j in range(len(shipsai)):
         for k in range(len(shipsai[j].projection)):
@@ -365,10 +361,14 @@ def placeboatsai():
                     shipsai[j].projection.append([shipsai[j].projet(x,y,caseadversaire)])
                     shipsai[j].projection.pop()
             
-        print(shipsai[j].projection)
         shipsai[j].placementai(caseadversaire)    
+
+                                
         
-        
+
+       
+    
+
 def hit():
     global hits
     global totalhits
@@ -384,6 +384,7 @@ def hit():
     
 
 def aiattack():
+    time.sleep(0.3)
     global sens
     global direction
     global casebatx
@@ -554,9 +555,6 @@ def aiattack():
         
         if hit()==True:
             cadre.after(300, aiattack)
-        else:
-            player_turn==True 
-            information.itemconfigure(1, text='It is your turn to play.')
     else:
         information.itemconfigure(1, text='It is your turn to play.')
 
@@ -788,5 +786,5 @@ master.bind("<Button-1>", changement)
 #Bouton2 = tk.Button(master, text = 'Placer bateau2', command = placer_boats).grid(row=2, column=1)
 ai = tk.Button(master, text = 'ai', command = aiattack).grid(row=0, column=1)
 #play=tk.Button(master, text="Jouer", width="10", height="2", command=gamemode).grid(column=2, row=0)
-#placeboatsai()
+placeboatsai()
 master.mainloop()
