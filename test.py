@@ -409,6 +409,7 @@ def aiattack():
     global casebatx
     global casebaty
     global ships
+    global player_turn
     if attacked_all()== True:
         return False
         
