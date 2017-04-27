@@ -604,11 +604,6 @@ boatframe.grid(column=1,row=0, sticky="N")
 selectable=True #variable qui assure que seulement un bateau soit séléctionné à la fois
 bl=0
 
-
-l=largeurcadre/10
-h=hauteurcadre/10
-
- 
 b5_coord = (l+300),(h-40), (l+300),h, (l+50),h, (l+50),(h-40)
 b4_coord = (l+270),(h+30), (l+270),(h+70), (l+80),(h+70), (l+80),(h+30)
 b3_coord = (l+240),(h+100), (l+240),(h+140), (l+110),(h+140), (l+110),(h+100)
