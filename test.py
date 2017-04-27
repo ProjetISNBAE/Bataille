@@ -348,21 +348,18 @@ def placeboatsai():
                 shipsai[i].projection.append(shipsai[i].projet(x,y,caseadversaire))
         shipsai[i].projection.pop()
         print(shipsai[i].projection)
-        
+   
     for j in range(len(shipsai)):
-        for k in range(len(shipsai[i].projection)-1):
+        for k in range(1,len(shipsai[j].projection),1):
             while shipsai[j].check_placement(x,y)==False or shipsai[j].projection[k].check_surrounding()==False:
-                try:
                     shipsai[j].orientation=random_orientation()
-                    del shipsai[i].projection[:]
+                    del shipsai[j].projection[:]
                     x,y=rancoord()
-                    shipsai[i].projection.append(shipsai[i].projet(x,y,caseadversaire))
-                
-                except IndexError:
-                    pass
-        #shipsai[j].projection.pop()
+                    shipsai[j].projection.append(shipsai[j].projet(x,y,caseadversaire))
+                    shipsai[j].projection.pop()
+            
         print(shipsai[j].projection)
-        shipsai[j].placement(x,y,caseadversaire)     
+        shipsai[j].placement(x,y,caseadversaire)   
         
         
 def hit():
