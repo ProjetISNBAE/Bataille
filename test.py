@@ -209,7 +209,11 @@ class ship:
             elif self.orientation=='W':
                 liste[x+i][y].boat()
                 self.cases(self.endroits,x+i,y, liste)
-                    
+                
+    def placementai(self, liste):
+        for i in range(self.length):
+            self.projection[i].boat()  
+            
     def cases(self,liste,x,y, liste2):
         liste.append(liste2[x][y])
         
@@ -348,7 +352,7 @@ def placeboatsai():
             while  shipsai[i].check_placement(x,y)==False:
                 del shipsai[i].projection[:]
                 x,y=rancoord()
-                shipsai[i].projection.append(shipsai[i].projet(x,y,caseadversaire))
+                shipsai[i].projection.append([shipsai[i].projet(x,y,caseadversaire)])
         shipsai[i].projection.pop()
         print(shipsai[i].projection)
    
@@ -358,11 +362,11 @@ def placeboatsai():
                     shipsai[j].orientation=random_orientation()
                     del shipsai[j].projection[:]
                     x,y=rancoord()
-                    shipsai[j].projection.append(shipsai[j].projet(x,y,caseadversaire))
+                    shipsai[j].projection.append([shipsai[j].projet(x,y,caseadversaire)])
                     shipsai[j].projection.pop()
             
         print(shipsai[j].projection)
-        shipsai[j].placementai(x,y,caseadversaire)    
+        shipsai[j].placementai(caseadversaire)    
         
         
 def hit():
