@@ -299,9 +299,12 @@ class ai:
         if player_turn==True:
             case.attacked(self)
             print(self.case_attaquee and self.bateau)
-            player_turn=False
-            information.itemconfigure(1, text='It is not your turn to play.')
-            cadre.after(300, aiattack)
+            if self.case_attaquee and self.bateau:
+                player_turn=True
+            else:
+                player_turn=False
+                information.itemconfigure(1, text='It is not your turn to play.')
+                cadre.after(300, aiattack)
         else:
             information.itemconfigure(1, text='It is not your turn to play.')
         
@@ -547,6 +550,9 @@ def aiattack():
         
         if hit()==True:
             cadre.after(300, aiattack)
+        else:
+            player_turn==True 
+            information.itemconfigure(1, text='It is your turn to play.')
     else:
         information.itemconfigure(1, text='It is your turn to play.')
 
