@@ -83,9 +83,7 @@ class case:
         if self.case_attaquee==False:
             self.case_attaquee=True
             self.draw()
-        else:
-            self.case_attaquee=False
-            self.draw()
+        
             
             """def place(event):
     global orientation
@@ -256,9 +254,6 @@ class ai: #classe pour casesadversaire
     def attacked(self):
         if self.case_attaquee==False:
             self.case_attaquee=True
-            self.draw()
-        else:
-            self.case_attaquee=False
             self.draw()
             
             
