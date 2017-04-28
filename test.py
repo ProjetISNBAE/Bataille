@@ -371,36 +371,37 @@ def placeboatsai():
                                 
         
 
-       
-    
 
 def hit():       
     global userhits
-    global usertotalhits
     global aihits
     global aitotalhits
     a=0
     b=0
-    for i in range(9):
-        for j in range(9):
+    for i in range(10):
+        for j in range(10):
             if caseadversaire[i][j].case_attaquee==True and caseadversaire[i][j].bateau==True:
                 a=a+1
             if cases[i][j].case_attaquee==True and cases[i][j].bateau==True:
-                b=b+1    
-                
-    usertotalhits=a
+                b=b+1     
+    userhits=a
     aitotalhits=b
-    if usertotalhits==userhits+1:
-        userhits=userhits+1    
-
-    if aitotalhits==aihits+1:
+    if b==aihits+1:
         aihits=aihits+1
         return True            
-
+def winner():
+    global player_turn
+    if aitotalhits==21:
+        player_turn=0
+        information.itemconfigure(1, text='You lost.')
+        return False
+    if userhits==21:
+        player_turn=0
+        information.itemconfigure(1, text='You lost.')
+        return False
     
 
 def aiattack():
-    print(quel_bateau(cases[casebatx][casebaty]))
     global sens
     global direction
     global casebatx
@@ -409,9 +410,8 @@ def aiattack():
     global player_turn
     global userhits
     global aihits
-    if attacked_all()== True:
-        return False
-        
+    if winner()==False:
+        return None
     if player_turn==False and game_mode==True:    
         try:    
             if sens=="vertical":
@@ -519,10 +519,6 @@ def aiattack():
             if sens=="unknown":
                 try:
                     essai=False
-                    if ships[quel_bateau(cases[casebatx][casebaty])].bateau_en_vie()== 0:
-                        sens="none"
-                        direction="none"
-                        essai=True
                     while essai==False:
                         random=ranai()
                         if random==1:
@@ -585,14 +581,6 @@ def aiattack():
     
     else:
         information.itemconfigure(1, text='It is your turn to play.')
-        
-    print(aihits,userhits)
-    if aihits==21:
-        player_turn=0
-        print("you lost")
-    if userhits==21:
-        player_turn=0
-        print("you won")
 
     
 caseadversaire=[]
