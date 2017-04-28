@@ -15,6 +15,7 @@ shipsai=[]
 aitotalhits=0
 aihits=0
 userhits=0
+usertotalhits=0
 #==============================================================================
 
 master = tk.Tk()
@@ -130,7 +131,6 @@ class case:
             else:   
                 if player_turn==True:
                     self.attacked()
-                    print(self.case_attaquee and self.bateau)
                 else:
                     information.itemconfigure(1, text='It is not your turn to play.')
         else:
@@ -149,7 +149,7 @@ class case:
         for i in range(4):
             try:
                 adjacent_case=cases[(self.x+xcoordinate[i])][self.y+(ycoordinate[i])]
-                print(adjacent_case)
+                #print(adjacent_case)
                 if adjacent_case.bateau==True:
                     return False
             except:
@@ -230,7 +230,7 @@ class ship:
 
 
         
-class ai:
+class ai: #classe pour casesadversaire
     
     def __init__(self, x, y):
         self.x=x
@@ -263,21 +263,16 @@ class ai:
             self.draw()
             
             
-    def check_surrounding(self): #check s'il n'y a pas de bateau autour
+    def check_surrounding(self): #check s'il n'y a pas de bateau autour et sur sa position
         xcoordinate=[-1,0,0,+1,0]
         ycoordinate=[0,+1,-1,0,0]
         for i in range(5):
             try:
-                adjacent_case=caseadversaire[(self.x+xcoordinate[i])][self.y+(ycoordinate[i])]
-                if adjacent_case.bateau==True:
+                if caseadversaire[(self.x+xcoordinate[i])][self.y+(ycoordinate[i])].bateau==True:
                     return False
             except:
                     IndexError
         return True
-                
-                 
-    def checks(self):
-        return self.check_self() and self.check_surrounding()
             
     def draw(self):
         rect=cadre.create_rectangle(self.xdebut,self.ydebut,self.xfin,self.yfin, fill=self.color())
@@ -291,7 +286,7 @@ class ai:
         global player_turn
         if player_turn==True:
             case.attacked(self)
-            print(self.case_attaquee and self.bateau)
+            #print(self.case_attaquee and self.bateau)
             if self.case_attaquee and self.bateau:
                 player_turn=True
             else:
@@ -369,6 +364,8 @@ def placeboatsai():
                                 
         
 
+       
+    
 
 def hit():       
     global userhits
@@ -400,27 +397,27 @@ def winner():
     
 
 def aiattack():
-    global sens
-    global direction
-    global casebatx
+    global sens #par default sens="none"
+    global direction #par default direction="none"
+    global casebatx  #position ou se trouve un bateau (la variable est set plus basse dans "if sens==none")
     global casebaty
-    global ships
-    global player_turn
-    global userhits
-    global aihits
-    if winner()==False:
+    global ships    #liste dans laquel se trouve les objet ships ou l'ordinateur va attauqer
+    global player_turn  #la variable qui determine le tour du joueur ou de l'ordinateur
+    global userhits     #le nb de case ou se trouvait un bateau touché par l'utilisateur
+    global aihits       #le nb de case ou se trouvait un bateau touché par l'ia
+    if winner()==False: #si aucun des deux joueurs n'a touché les 21 positions ou se trouvent les bateaux
         return None
-    if player_turn==False and game_mode==True:    
-        try:    
-            if sens=="vertical":
+    if player_turn==False and game_mode==True:   #si c'est à l'ia de jouer et que les bateaux sont tous placés
+        try:                                    #pour éviter les erreurs d'index il y aura de nombreux fonction try
+            if sens=="vertical":                #si le sens est connu et qu'il est "verticale"
                 essai=False
-                if ships[quel_bateau(cases[casebatx][casebaty])].bateau_en_vie()== 0:
+                if ships[quel_bateau(cases[casebatx][casebaty])].bateau_en_vie()== 0: #si le bateau est coulé, l'ia attaque aléatoirement a nouveau
                     sens="none"
                     direction="none"
                 else:
                     while essai==False:
                         try:
-                            if direction=="haut":
+                            if direction=="haut":           #si la direction (qui est déterminer en dessous) est connue l'ia attaque toutes les cases vers le "haut"jusqu a ce qu le bateau est coulé
                                 while essai==False:
                                     if cases[casebatx][casebaty-1].case_attaquee==False: 
                                         cases[casebatx][casebaty-1].attacked()
@@ -436,7 +433,7 @@ def aiattack():
                                         essai=True
                                         
                             else:
-                                if cases[casebatx][casebaty+1].case_attaquee==False: 
+                                if cases[casebatx][casebaty+1].case_attaquee==False: #l'ia attaque dans une direction jusqu'à ce qu'il n'ait plus de case bateau, elle set donc le direction="haut"
                                     cases[casebatx][casebaty+1].attacked()
                                     essai=True
                                     if cases[casebatx][casebaty+1].bateau==False:
@@ -459,13 +456,13 @@ def aiattack():
                                     essai=True
                                     if cases[casebatx][casebaty+4].bateau==False:
                                         direction="haut"
-                                        
+                                    
 
                         except IndexError:
                             pass
 
             
-            if sens=="horizontal":
+            if sens=="horizontal": #si le sens est connu et qu'il est "horiontal"
                 essai=False
                 if ships[quel_bateau(cases[casebatx][casebaty])].bateau_en_vie()== 0:
                     sens="none"
@@ -514,18 +511,18 @@ def aiattack():
                         except IndexError:
                             pass
         
-            if sens=="unknown":
+            if sens=="unknown":     #si un bateau a été touché mais l'ordinateur ne sait pas dans quel sens se trouve les autres cases
                 try:
-                    essai=False
-                    while essai==False:
+                    essai=False     #la variable qui check si une case a été attaqué
+                    while essai==False:     #l'ia attaque aléatoirement la case au dessus, en dessous a droite et a gauche pour déterminer le sens
                         random=ranai()
                         if random==1:
-                            if cases[casebatx+1][casebaty].case_attaquee==False:
+                            if cases[casebatx+1][casebaty].case_attaquee==False:    #seulement attaqué une case non-attaquée
                                 cases[casebatx+1][casebaty].attacked()
-                                if cases[casebatx+1][casebaty].bateau==True:
+                                if cases[casebatx+1][casebaty].bateau==True:        #si un bateau s'y trouuve alors le sens="horizontal" car x et non y a changé
                                     sens="horizontal"
                                 else:
-                                    sens="unknown"
+                                    sens="unknown"                                  #sinon le sens est encore inconnu et c'est au joueur de jouer car aucune case avec un bateau n'a été touchée
                                 essai=True
                                     
                                     
@@ -539,7 +536,7 @@ def aiattack():
                                 essai=True
                                 
                         if random==3:
-                            if cases[casebatx][casebaty+1].case_attaquee==False:    #probleme
+                            if cases[casebatx][casebaty+1].case_attaquee==False:   
                                 cases[casebatx][casebaty+1].attacked()
                                 if cases[casebatx][casebaty+1].bateau==True:
                                     sens="vertical"
@@ -559,28 +556,28 @@ def aiattack():
                 except IndexError: 
                     pass   
                 
-            if sens=="none":   
-                a,b=rancoord()
-                while cases[a][b].case_attaquee==True:
+            if sens=="none":            #par défault le sens est "none", l'ia n'a aucune information sur la position des bateaux
+                a,b=rancoord()          #des coordonnées aléatoire sont données (voir rancoord())
+                while cases[a][b].case_attaquee==True: #determination de coordonées aleatoires qui n'ont pas encore été attaquée
                     a,b=rancoord()
                 cases[a][b].attacked()
-                if cases[a][b].bateau==True:
-                    sens="unknown"
-                    casebatx=a
+                if cases[a][b].bateau==True:    #si un bateau se trouve sur cette case
+                    sens="unknown"              #le sens="unknown" pour qu'au prochain tour 'l'ia sait où attaquer
+                    casebatx=a                  #les coordonées sont enregistrées
                     casebaty=b
-        except IndexError:
-            pass    
+        except IndexError:          #si une Erreur d'index occure
+            pass                    #ignorer
         
-        if hit()==True:
-            cadre.after(300, aiattack)
+        if hit()==True:             #si un bateau a été touché par l'ia (voir hit())
+            cadre.after(300, aiattack) #attendre 300ms, puis executer aiattack()
         else:
-            player_turn==True 
+            player_turn==True       #sinon c'est au tour du joueur
             information.itemconfigure(1, text='It is your turn to play.')
     
     else:
         information.itemconfigure(1, text='It is your turn to play.')
 
-    
+        
 caseadversaire=[]
 cases=[]
 for i in range(10):
@@ -769,9 +766,9 @@ def calcul_vie(liste):
     for i in range(len(liste)):
         longueur_totale=longueur_totale+liste[i].length
         vie=vie+(liste[i].bateau_en_vie()*liste[i].length)
-        print(vie)
+        #print(vie)
     if longueur_totale!=0:
-        print(vie/longueur_totale*100)
+        #print(vie/longueur_totale*100)
         return vie/longueur_totale*100
         
 joueur=vies.create_text(150,20,text='Joueur:'+str(calcul_vie(ships))+'%')
@@ -782,7 +779,6 @@ def actualise(liste):
 def quel_bateau(case):
     for i in range(len(ships)):
         for j in range(len(ships[i].endroits)):
-            print(ships[i].endroits[j])
             if ships[i].endroits[j]==case:
                 return i #ca te renvoie l'indice du bateau, genre cest le seul moyen de dire "quel bateau" cest
             
@@ -794,12 +790,6 @@ def all_placed():
         return True
     else:
         return False
-"""
-def changement(event):
-    cases[0][0].boat()
-    print('jello')
-master.bind("<Button-1>", changement)
-"""
 #Bouton2 = tk.Button(master, text = 'Placer bateau2', command = placer_boats).grid(row=2, column=1)
 ai = tk.Button(master, text = 'ai', command = aiattack).grid(row=0, column=1)
 #play=tk.Button(master, text="Jouer", width="10", height="2", command=gamemode).grid(column=2, row=0)
