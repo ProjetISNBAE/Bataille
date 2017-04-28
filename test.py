@@ -1,6 +1,5 @@
 import tkinter as tk
 import random
-import time
 #==============================================================================
 taillejeu="1080x1080"
 hauteurcadre=800
@@ -16,7 +15,6 @@ shipsai=[]
 aitotalhits=0
 aihits=0
 userhits=0
-usertotalhits=0
 #==============================================================================
 
 master = tk.Tk()
