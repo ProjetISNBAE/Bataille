@@ -83,7 +83,6 @@ class case:
         if self.case_attaquee==False:
             self.case_attaquee=True
             self.draw()
-        
             
             """def place(event):
     global orientation
@@ -386,7 +385,7 @@ def winner():
         return False
     if userhits==21:
         player_turn=0
-        information.itemconfigure(1, text='You lost.')
+        information.itemconfigure(1, text='You won.')
         return False
     
 
