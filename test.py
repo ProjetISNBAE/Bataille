@@ -27,6 +27,7 @@ cadre.grid(column=0, row=0)
 orientation='N'#ffaudra voir si on le fait rester à ce que cest ou si on le fait revenir a N
 game_mode=False
 player_turn=False  #Variable boouléenne qui vérifie que assure le respect du tour de jeu 
+bateau_en_vie=True
 
 def gamemode():        #Seperates the moment of boat placement from the game play
     global game_mode
@@ -52,12 +53,14 @@ class case:
         return str(self.x) + ','+str(self.y)
     
     def draw(self):
+        global bateau_en_vie
         rect=cadre.create_rectangle(self.xdebut,self.ydebut,self.xfin,self.yfin, fill=self.color())
-        if self.bateau==True and self.attacked==True:
-            cadre.create_line(self.xdebut,self.ydebut,self.xfin,self.yfin,fill="red") 
-            cadre.create_line(self.xdebut,self.yfin,self.xfin,self.ydebut,fill="red")
+        if bateau_en_vie==False and self.color()=="red":
+            cadre.create_line(self.xdebut,self.ydebut,self.xfin,self.yfin,fill="black") 
+            cadre.create_line(self.xdebut,self.yfin,self.xfin,self.ydebut,fill="black")
         
         cadre.tag_bind(rect, "<Button-1>", self.click)
+        
     def boat(self):
         if self.bateau==False:
             self.bateau=True
@@ -102,6 +105,8 @@ class case:
         global bl
         global selectable
         global ships
+        global shipsai
+        global caseadversaire
         environs=True
         if selectable==False:
             if game_mode==False:
@@ -127,6 +132,7 @@ class case:
             else:   
                 if player_turn==True:
                     self.attacked()
+                    shipsai[quel_bateau(caseadversaire[self.x][self.y])].bateau_en_vie(shipsai)
                 else:
                     information.itemconfigure(1, text='It is not your turn to play.')
         else:
@@ -217,12 +223,22 @@ class ship:
     def cases(self,liste,x,y, liste2):
         liste.append(liste2[x][y])
         
-    def bateau_en_vie(self):
+    def bateau_en_vie(self, liste):
+        global bateau_en_vie
         level=0
         for i in range(self.length):
-            if self.endroits[i].case_attaquee==False:
+            if self.endroits[i].case_attaquee==True:
                 level=level+1
-        return level/self.length
+        lvl= int(level/self.length)
+        if lvl==1:
+            bateau_en_vie=False 
+            print('boat fully attacked')
+            for i in range(self.length):
+                switch_turn()
+                self.endroits[i].draw()
+            bateau_en_vie=True 
+            switch_turn()
+        return lvl
 
 
         
@@ -268,11 +284,12 @@ class ai: #classe pour casesadversaire
         return True
             
     def draw(self):
+        global bateau_en_vie
         rect=cadre.create_rectangle(self.xdebut,self.ydebut,self.xfin,self.yfin, fill=self.color())
-        if self.bateau==True and self.attacked==True:
-            cadre.create_line(self.xdebut,self.ydebut,self.xfin,self.yfin,fill="red") 
-            cadre.create_line(self.xdebut,self.yfin,self.xfin,self.ydebut,fill="red")
-            
+        if bateau_en_vie==False and self.color()=="red":
+            cadre.create_line(self.xdebut,self.ydebut,self.xfin,self.yfin,fill="black") 
+            cadre.create_line(self.xdebut,self.yfin,self.xfin,self.ydebut,fill="black")
+
         cadre.tag_bind(rect, "<Button-1>", self.click)
         
     def click(self, event):
@@ -404,7 +421,7 @@ def aiattack():
         try:                                    #pour éviter les erreurs d'index il y aura de nombreux fonction try
             if sens=="vertical":                #si le sens est connu et qu'il est "verticale"
                 essai=False
-                if ships[quel_bateau(cases[casebatx][casebaty])].bateau_en_vie()== 0: #si le bateau est coulé, l'ia attaque aléatoirement a nouveau
+                if ships[quel_bateau(cases[casebatx][casebaty])].bateau_en_vie(ships)== 1: #si le bateau est coulé, l'ia attaque aléatoirement a nouveau
                     sens="none"
                     direction="none"
                 else:
@@ -457,7 +474,7 @@ def aiattack():
             
             if sens=="horizontal": #si le sens est connu et qu'il est "horiontal"
                 essai=False
-                if ships[quel_bateau(cases[casebatx][casebaty])].bateau_en_vie()== 0:
+                if ships[quel_bateau(cases[casebatx][casebaty])].bateau_en_vie(ships)== 1:
                     sens="none"
                     direction="none"
                 else:
@@ -739,7 +756,12 @@ master.bind('<Down>', rotate_south)
 master.bind('<Right>', rotate_west)
 
 #====================================================================
-
+def switch_turn():
+    global player_turn
+    if player_turn==False:
+        player_turn=True
+    else:
+        player_turn=False
 #======================== Info box ==================================
 information=tk.Canvas(master, width=300, height=300)
 information.grid(column=1,row=0, sticky='S')
@@ -758,7 +780,7 @@ def calcul_vie(liste):
     vie=0
     for i in range(len(liste)):
         longueur_totale=longueur_totale+liste[i].length
-        vie=vie+(liste[i].bateau_en_vie()*liste[i].length)
+        vie=vie+(liste[i].bateau_en_vie(liste)*liste[i].length)
         #print(vie)
     if longueur_totale!=0:
         #print(vie/longueur_totale*100)
