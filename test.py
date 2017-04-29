@@ -257,9 +257,9 @@ class ai: #classe pour casesadversaire
             
             
     def check_surrounding(self): #check s'il n'y a pas de bateau autour et sur sa position
-        xcoordinate=[-1,0,0,+1,0]
-        ycoordinate=[0,+1,-1,0,0]
-        for i in range(5):
+        xcoordinate=[-1,0,0,+1]
+        ycoordinate=[0,+1,-1,0]
+        for i in range(4):
             try:
                 if caseadversaire[(self.x+xcoordinate[i])][self.y+(ycoordinate[i])].bateau==True:
                     return False
