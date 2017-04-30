@@ -589,7 +589,7 @@ def aiattack():
         information.itemconfigure(1, text='It is your turn to play.')
 
         
-caseadversaire=[]
+caseadversaire=[]   #créations des objets grace au classe ai et case
 cases=[]
 for i in range(10):
     cases.append([])
