@@ -6,6 +6,7 @@ hauteurcadre=800
 largeurcadre=400
 l=largeurcadre/11
 h=hauteurcadre/11
+#==============================================================================
 sens="none"
 direction="none"
 casebatx=0
@@ -15,6 +16,11 @@ shipsai=[]
 aitotalhits=0
 aihits=0
 userhits=0
+
+orientation='N'#ffaudra voir si on le fait rester à ce que cest ou si on le fait revenir a N
+game_mode=False
+player_turn=False  #Variable boouléenne qui vérifie que assure le respect du tour de jeu 
+bateau_en_vie=True
 #==============================================================================
 
 master = tk.Tk()
@@ -24,10 +30,6 @@ tk.Frame(master).grid()
 cadre=tk.Canvas(master, width=largeurcadre, height=hauteurcadre,bg="white")
 cadre.grid(column=0, row=0)
 
-orientation='N'#ffaudra voir si on le fait rester à ce que cest ou si on le fait revenir a N
-game_mode=False
-player_turn=False  #Variable boouléenne qui vérifie que assure le respect du tour de jeu 
-bateau_en_vie=True
 
 def gamemode():        #Seperates the moment of boat placement from the game play
     global game_mode
