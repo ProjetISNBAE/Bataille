@@ -216,7 +216,7 @@ class ship:
                 liste[x+i][y].boat()
                 self.cases(self.endroits,x+i,y, liste)
                 
-    def placementai(self, liste):
+    def placementai(self):   #fonction qui place les bateaux de la liste sur cases
         for i in range(self.length):
             self.projection[i].boat()
                     
@@ -331,7 +331,7 @@ def attacked_all(): #check si toutes les cases ont été attaqué
             if cases[i][j].case_attaquee==False:
                 return False
                 
-def random_orientation(): 
+def random_orientation(): #génère une orientation alèatoire (nord, sud, est, ouest)
     random=ranai()
     if random==1:
         orientation="N"
@@ -343,7 +343,7 @@ def random_orientation():
         orientation="W" 
     return orientation
     
-def placeboatsai():
+def placeboatsai(): #fonction qui place les bateaux des l'ai
     global shipsai
     global caseadversaire
     boatlengths=[5,4,3,3,2,2,2]
@@ -377,32 +377,33 @@ def placeboatsai():
        
     
 
-def hit():       
-    global userhits
-    global aihits
-    global aitotalhits
+def hit():       #détermine si un bateau a été touché par l'ai et le score du joueur et de l'ai
+    global userhits #nombre de cases bateaux touché par le joueur
+    global aihits   #nombre de cases touchée par l'ai au tours precedent
+    global aitotalhits  #nombre de cases touchée par l'ai dans le tour present
     a=0
     b=0
     for i in range(10):
         for j in range(10):
-            if caseadversaire[i][j].case_attaquee==True and caseadversaire[i][j].bateau==True:
+            if caseadversaire[i][j].case_attaquee==True and caseadversaire[i][j].bateau==True: #comptage de case touché par le joueur
                 a=a+1
-            if cases[i][j].case_attaquee==True and cases[i][j].bateau==True:
+            if cases[i][j].case_attaquee==True and cases[i][j].bateau==True:                    #comptage de case touché par l'ai
                 b=b+1     
     userhits=a
     aitotalhits=b
-    if b==aihits+1:
-        aihits=aihits+1
-        return True            
-def winner():
-    global player_turn
-    if aitotalhits==21:
-        player_turn=0
-        information.itemconfigure(1, text='You lost.')
-        return False
-    if userhits==21:
-        player_turn=0
-        information.itemconfigure(1, text='You won.')
+    if b==aihits+1:     #si une case de plus a été touché qu'au tour avant
+        aihits=aihits+1 #ajouter a la variable 1 pour pouvoir reverifier au prochain tour
+        return True     
+    
+def winner():   #déterminer le gagnant
+    global player_turn 
+    if aitotalhits==21: #si l'ai a touché les 21 cases bateaux (5+4+3+3+2+2+2) avant le joueur
+        player_turn=0   #le joueur n'a plus le droit de jouer
+        information.itemconfigure(1, text='You lost.') #indiquation que le joueur a perdu
+        return False    
+    if userhits==21: #si le joueur a touché les 21 cases bateaux avant l'ai
+        player_turn=0   #le joueur n'a plus le droit de jouer
+        information.itemconfigure(1, text='You won.') #indiquation qu'il a gagné
         return False
     
 
@@ -482,7 +483,7 @@ def aiattack():
                         try:
                             if direction=="gauche":
                                 while essai==False:
-                                    if cases[casebatx-1][casebaty].case_attaquee==False:
+                                    if cases[casebatx-1][casebaty].case_attaquee==False:    # attaque à gauche de la cases[casebatx][casebaty] jusqu'à ce que le bateau soit coulé
                                         cases[casebatx-1][casebaty].attacked()
                                         essai=True
                                     elif cases[casebatx-2][casebaty].case_attaquee==False: 
@@ -495,7 +496,7 @@ def aiattack():
                                         cases[casebatx-4][casebaty].attacked()
                                         essai=True
                             else:
-                                if cases[casebatx+1][casebaty].case_attaquee==False: 
+                                if cases[casebatx+1][casebaty].case_attaquee==False:    #determination de la direction ou seulement attauqe dans un sens
                                     cases[casebatx+1][casebaty].attacked()
                                     essai=True
                                     if cases[casebatx+1][casebaty].bateau==False:
