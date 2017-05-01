@@ -244,14 +244,14 @@ class ship:
 
 
         
-class ai: #classe pour casesadversaire
+class ai: #classe pour casesadversaire (voir classe case)
     
-    def __init__(self, x, y):
+    def __init__(self, x, y):   
         self.x=x
         self.y=y
         self.bateau=False
         self.case_attaquee=False
-        self.xdebut=x*l
+        self.xdebut=x*l #difference de placement (cases de l'adversaire au dessus)
         self.xfin=(x+1)*l
         self.ydebut=y*(h/2)
         self.yfin=y*(h/2)+(h/2)
@@ -310,8 +310,8 @@ class ai: #classe pour casesadversaire
         
     def color(self):
         global player_turn 
-        couleur="white"
-        if self.case_attaquee and self.bateau:
+        couleur="white"     #ne pas dessiner les bateaux comme dans la classe case
+        if self.case_attaquee and self.bateau:  #seulement s'ils osnt touchés
             couleur="red"
             player_turn=True
         elif self.case_attaquee==True and self.bateau==False:
@@ -346,17 +346,17 @@ def random_orientation(): #génère une orientation alèatoire (nord, sud, est, 
     return orientation
     
 def placeboatsai(): #fonction qui place les bateaux des l'ai
-    global shipsai
-    global caseadversaire
-    boatlengths=[5,4,3,3,2,2,2]
+    global shipsai  #liste contenants les objets bateaux de l'ai (future liste)
+    global caseadversaire   #liste des objets cases de l'ai
+    boatlengths=[5,4,3,3,2,2,2] #nombre et longueur des bateaux
 
-    for i in range(len(boatlengths)):
-        orientation=random_orientation()
-        shipsai.append(ship(boatlengths[i],orientation))
+    for i in range(len(boatlengths)): #creation de bateux et de projection aléatoire pour pouvoir vérifier toute les conditions dans la 2ème tant que
+        orientation=random_orientation()    #creation d'une orientaion aléatoire
+        shipsai.append(ship(boatlengths[i],orientation))    #création des bateaux et les mettre dans la liste shipsai
         x,y=rancoord()
-        shipsai[i].projection.append(shipsai[i].projet(x,y,caseadversaire))
+        shipsai[i].projection.append(shipsai[i].projet(x,y,caseadversaire)) #ajouter une projection aléatoire à la liste attribut des bateaux
         for l in range(boatlengths[i]):       
-            while  shipsai[i].check_placement(x,y)==False:
+            while  shipsai[i].check_placement(x,y)==False:  #verifier qu'elle soit bien dans le cadre
                 del shipsai[i].projection[:]
                 x,y=rancoord()
                 shipsai[i].projection.append([shipsai[i].projet(x,y,caseadversaire)])
@@ -364,14 +364,14 @@ def placeboatsai(): #fonction qui place les bateaux des l'ai
    
     for j in range(len(shipsai)):
         for k in range(len(shipsai[j].projection)):
-            while shipsai[j].check_placement(x,y)==False or shipsai[j].projection[k].check_surrounding()==False:
-                    shipsai[j].orientation=random_orientation()
+            while shipsai[j].check_placement(x,y)==False or shipsai[j].projection[k].check_surrounding()==False:    #2ème tant que vérifiant que le bateau qui va ètre placé grace à la liste projection remplise les conditions necessaire
+                    shipsai[j].orientation=random_orientation() #donner une orientation, des coordonnées aléatoire
                     del shipsai[j].projection[:]
                     x,y=rancoord()
                     shipsai[j].projection.append([shipsai[j].projet(x,y,caseadversaire)])
                     shipsai[j].projection.pop()
             
-        shipsai[j].placementai(caseadversaire)    
+        shipsai[j].placementai(caseadversaire)    #si toutes les conditions sont rempli les bateaux sont placés un par un, pour que les nouveaux bateaux n'interfère pas avec les anciens (qu'ils soit placées au même endroit)
 
                                 
         
@@ -477,7 +477,7 @@ def aiattack():
             
             if sens=="horizontal": #si le sens est connu et qu'il est "horiontal"
                 essai=False
-                if ships[quel_bateau(cases[casebatx][casebaty])].bateau_en_vie(ships)== 1:
+                if ships[quel_bateau(cases[casebatx][casebaty])].bateau_en_vie(ships)== 1:  #si le bateau est coulé, l'ia attaque aléatoirement a nouveau
                     sens="none"
                     direction="none"
                 else:
