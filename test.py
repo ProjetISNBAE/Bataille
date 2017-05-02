@@ -782,7 +782,7 @@ class barre():
         self.draw()
         
     def draw(self):
-        #barres.delete(self.bar)
+        barres.delete(self.bar)
         print(calcul_vie(ships))
         if calcul_vie(ships)!=None:
             self.bar=barres.create_rectangle(0,0,3*calcul_vie(ships),50, fill='blue')
@@ -791,19 +791,6 @@ barre_joueur=barre(0)
     
 #====================================================================
 
-
-
-def calcul_vie(liste):
-    longueur_totale=0
-    vie=0
-    for i in range(len(liste)):
-        longueur_totale=longueur_totale+liste[i].length
-        vie=vie+(liste[i].bateau_en_vie(liste)*liste[i].length)
-        #print(vie)
-    if longueur_totale!=0:
-        #print(vie/longueur_totale*100)
-        return vie/longueur_totale*100
-        
 
 
 def actualise(liste):
