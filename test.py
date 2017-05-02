@@ -356,7 +356,7 @@ def placeboatsai(): #fonction qui place les bateaux des l'ai
                     shipsai[j].projection.append([shipsai[j].projet(x,y,caseadversaire)])
                     shipsai[j].projection.pop()
             
-        shipsai[j].placementai(caseadversaire)    #si toutes les conditions sont rempli les bateaux sont placés un par un, pour que les nouveaux bateaux n'interfère pas avec les anciens (qu'ils soit placées au même endroit)
+        shipsai[j].placementai()    #si toutes les conditions sont rempli les bateaux sont placés un par un, pour que les nouveaux bateaux n'interfère pas avec les anciens (qu'ils soit placées au même endroit)
 
                                 
         
