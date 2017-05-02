@@ -750,7 +750,7 @@ def info(): #fonction qui modifie le panneau pour apporter plus d'instructions s
     information.itemconfigure(1, text='Use arrow keys to modify the orientation of the boat. \n Place boats on the bottom grid, this one is yours.')
 #====================================================================
 barres=tk.Canvas(master, height=150,width=600)
-barres.grid(row=1,column=0)
+barres.grid(row=0,column=0)
 def calcul_vie(liste):
     longueur_totale=0
     vie=0
@@ -778,9 +778,6 @@ barre_joueur=barre(0)
 #====================================================================
 
 
-
-vies=tk.Canvas(master, width=300, height=300)
-vies.grid(column=2,row=1)
 
 def calcul_vie(liste):
     longueur_totale=0
