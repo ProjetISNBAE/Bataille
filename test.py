@@ -216,7 +216,7 @@ class ship:
         global boat_sunk
         level=0 #niveau de vie du bateau (sous forme de compteur)
         for i in range(self.length):
-            if self.endroits[i].case_attaquee==True:
+            if self.endroits[i].case_attaquee==False:
                 level=level+1
         lvl= int(level/self.length)  #niveau de vie du bateau (sous forme de proportion de la taille du bateau)
         if lvl==1: #si le niveau est à 1 c'est que le nombre de cases attaqués du bateau est égale au nombre de cases totales du bateau
