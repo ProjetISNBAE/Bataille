@@ -587,7 +587,7 @@ def aiattack():
     
     else:
         information.itemconfigure(1, text='It is your turn to play.')
-    acutalise(ships)
+    actualise(ships)
 
         
 caseadversaire=[]   #créations des objets grace au classe ai et case
