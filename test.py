@@ -577,14 +577,7 @@ def aiattack():
     actualise()
 
         
-caseadversaire=[]   #créations des objets grace au classe ai et case
-cases=[]
-for i in range(10):
-    cases.append([])
-    caseadversaire.append([])
-    for j in range(10):
-        cases[i].append(case(i,j))
-        caseadversaire[i].append(ai(i,j))
+
       
 
     
@@ -803,5 +796,16 @@ def all_placed(): # test si tous les bateaux du joueur ont bien été placés.
 
 ai = tk.Button(master, text = 'ai', command = aiattack).grid(row=1, column=1)
 
+#Création de deux grilles de 10*10 cases                 
+                 
+caseadversaire=[]   
+cases=[]
+for i in range(10):
+    cases.append([])
+    caseadversaire.append([])
+    for j in range(10):
+        cases[i].append(case(i,j))
+        caseadversaire[i].append(ai(i,j))
+                 
 placeboatsai()
 master.mainloop()
