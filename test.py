@@ -408,20 +408,12 @@ def aiattack():
     if player_turn==False and game_mode==True:   #si c'est à l'ia de jouer et que les bateaux sont tous placés                                #pour éviter les erreurs d'index il y aura de nombreux fonction try
         if sens=="vertical":                #si le sens est connu et qu'il est "verticale"
             essai=False
-            try:
-                if ships[quel_bateau(cases[casebatx][casebaty])].bateau_en_vie(ships)== 0:  #si le bateau est coulé, l'ia attaque aléatoirement a nouveau
-                    sens="none"
-                    direction="none"
-            except TypeError:
+            if ships[quel_bateau(cases[casebatx][casebaty])].bateau_en_vie(ships)== 0:  #si le bateau est coulé, l'ia attaque aléatoirement a nouveau
                 sens="none"
                 direction="none"
 
                 
-            
-            else:
-                
                 while essai==False:
-
                     if direction=="haut":           #si la direction (qui est déterminer en dessous) est connue l'ia attaque toutes les cases vers le "haut"jusqu a ce qu le bateau est coulé
                         while essai==False:
                             if cases[casebatx][casebaty-1].case_attaquee==False: 
@@ -531,8 +523,8 @@ def aiattack():
             
             while essai==False:     #l'ia attaque aléatoirement la case au dessus, en dessous a droite et a gauche pour déterminer le sens
                 random=ranai()
-                if random==1 and test_verticale==True:
-
+                
+                if random==1 and test_horizontale==False:
                     if cases[casebatx+1][casebaty].case_attaquee==False:    #seulement attaqué une case non-attaquée
                         cases[casebatx+1][casebaty].attacked()
                         if cases[casebatx+1][casebaty].bateau==True:        #si un bateau s'y trouuve alors le sens="horizontal" car x et non y a changé
@@ -541,7 +533,7 @@ def aiattack():
                         else:
                             sens="unknown"                                  #sinon le sens est encore inconnu et c'est au joueur de jouer car aucune case avec un bateau n'a été touchée
 
-                elif random==2 and test_verticale==True:
+                elif random==2 and test_horizontale==False:
                     if cases[casebatx-1][casebaty].case_attaquee==False:
                         cases[casebatx-1][casebaty].attacked()
                         essai=True
@@ -551,7 +543,7 @@ def aiattack():
                         else:
                             sens="unknown"
 
-                elif random==3 and test_horizontale==False:
+                elif random==3 and test_verticale==True:
                     if cases[casebatx][casebaty+1].case_attaquee==False:   
                         cases[casebatx][casebaty+1].attacked()
                         essai=True
@@ -561,7 +553,7 @@ def aiattack():
                         else:
                             sens="unknown"
 
-                elif random==4 and test_horizontale==False:
+                elif random==4 and test_verticale==True:
                     if cases[casebatx][casebaty-1].case_attaquee==False:
                         cases[casebatx][casebaty-1].attacked()
                         essai=True
