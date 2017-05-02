@@ -40,56 +40,57 @@ def gamemode():  #fonction qui est appelé une fois que tous les bateaux de l'ut
     boatframe.configure(cursor='boat')
     player_turn=True   #l'utilisateur commence par défaut
 
-class case:
+class case: #création des cases du terrainde jeu
     def __init__(self, x, y):
-        self.x=x
+        self.x=x #définition des coordonnées sur le terrain de jeu
         self.y=y
-        self.bateau=False
+        self.bateau=False #défintion des propriétés de la case
         self.case_attaquee=False        
-        self.xdebut=x*l
+        self.xdebut=x*l #défintion des coordonnées sur le canvas
         self.xfin=(x+1)*l
         self.ydebut=y*(h/2)+hauteurcadre/2
         self.yfin=y*(h/2)+(h/2)+hauteurcadre/2
-        self.draw()
+        self.draw() #création de la case sur le canvas
+        
     def __repr__(self):
         return str(self.x) + ','+str(self.y)
     
-    def draw(self):
-        global bateau_en_vie
+    def draw(self): #fonction de création de la case sur le canvas
+        global boat_sunk 
         rect=cadre.create_rectangle(self.xdebut,self.ydebut,self.xfin,self.yfin, fill=self.color())
         if boat_sunk==True and self.color()=="red":
             cadre.create_line(self.xdebut,self.ydebut,self.xfin,self.yfin,fill="black") 
             cadre.create_line(self.xdebut,self.yfin,self.xfin,self.ydebut,fill="black")
         
-        cadre.tag_bind(rect, "<Button-1>", self.click)
+        cadre.tag_bind(rect, "<Button-1>", self.click) #si on clique sur la case, elle se reconnait
         
-    def boat(self):
+    def boat(self): #changement de la propriété "bateau présent sur la case"
         if self.bateau==False:
             self.bateau=True
             self.draw()
         else:
             self.bateau=False
             self.draw()
-        
-    def color(self):
+      
+    def attacked(self): #idem, mais pour la propriété "la case a-t-elle étée attaquée"
+        if self.case_attaquee==False:
+            self.case_attaquee=True
+            self.draw()  
+    
+    def color(self): #fonction renvoyant la couleur que la case doit avoir
         global player_turn
-        couleur="white"
-        if self.bateau==True:
+        couleur="white" #la case est blanche par defaut
+        if self.bateau==True: #si un bateau est présent, elle est grise
             couleur="grey"
-        if self.case_attaquee and self.bateau:
+        if self.case_attaquee and self.bateau: #si un bateau est présent et qu'elle est attaquée, elle est rouge
             couleur="red"
             player_turn=False
-        elif self.case_attaquee==True and self.bateau==False:
+        elif self.case_attaquee==True and self.bateau==False: #si elle est attaquée sans la présence du bateau, elle est bleue
             couleur="blue"
             player_turn=True
         return couleur
     
-    def attacked(self):
-        if self.case_attaquee==False:
-            self.case_attaquee=True
-            self.draw()
-    
-    def click(self, event):
+    def click(self, event): #fonction se lançant lorsqu'on clique sur la case
         global game_mode
         global orientation
         global bl
@@ -121,9 +122,9 @@ class case:
                         actualise()
             else:   
                 if player_turn==True:
-                    self.attacked()
+                    None
                 else:
-                    information.itemconfigure(1, text='It is not your turn to play.')
+                    information.itemconfigure(1, text='You are playing on the other field.')
         else:
              information.itemconfigure(1, text='Please select a boat to place.')
          
