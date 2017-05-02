@@ -225,7 +225,7 @@ class ship:
             for i in range(self.length): 
                 self.endroits[i].draw() # Modifie l'apparence du bateau coulé case par case
             boat_sunk=False #Actualise la variable une fois que le bateau coulé à été représenté comme tel graphiquement 
-        return lvl #renvoi le niveau de vie du bateau 
+        return level #renvoi le niveau de vie du bateau 
 
 
         
