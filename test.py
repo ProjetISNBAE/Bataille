@@ -99,8 +99,8 @@ class case: #création des cases du terrainde jeu
         global shipsai
         global caseadversaire
         environs=True
-        if selectable==False:
-            if game_mode==False:
+        if game_mode==False:
+            if selectable==False:
                 ships.append(ship(bl,orientation))
                 bateau_selectionne=ships[len(ships)-1]
                 bateau_selectionne.projet(self.x, self.y, cases)
@@ -124,9 +124,9 @@ class case: #création des cases du terrainde jeu
                 if player_turn==True:
                     None
                 else:
-                    information.itemconfigure(1, text='You are playing on the other field.')
+                    information.itemconfigure(1, text='Please select a boat to place.')
         else:
-             information.itemconfigure(1, text='Please select a boat to place.')
+             information.itemconfigure(1, text='You are playing on the other field.')
          
     def check_self(self):
         if self.bateau==True:
