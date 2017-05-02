@@ -405,167 +405,180 @@ def aiattack():
     global aihits       #le nb de case ou se trouvait un bateau touché par l'ia
     if winner()==False: #si aucun des deux joueurs n'a touché les 21 positions ou se trouvent les bateaux
         return None
-    if player_turn==False and game_mode==True:   #si c'est à l'ia de jouer et que les bateaux sont tous placés
-        try:                                    #pour éviter les erreurs d'index il y aura de nombreux fonction try
-            if sens=="vertical":                #si le sens est connu et qu'il est "verticale"
-                essai=False
-                if ships[quel_bateau(cases[casebatx][casebaty])].bateau_en_vie(ships)== 1: #si le bateau est coulé, l'ia attaque aléatoirement a nouveau
+    if player_turn==False and game_mode==True:   #si c'est à l'ia de jouer et que les bateaux sont tous placés                                #pour éviter les erreurs d'index il y aura de nombreux fonction try
+        if sens=="vertical":                #si le sens est connu et qu'il est "verticale"
+            essai=False
+            try:
+                if ships[quel_bateau(cases[casebatx][casebaty])].bateau_en_vie(ships)== 0:  #si le bateau est coulé, l'ia attaque aléatoirement a nouveau
                     sens="none"
                     direction="none"
-                else:
-                    while essai==False:
-                        try:
-                            if direction=="haut":           #si la direction (qui est déterminer en dessous) est connue l'ia attaque toutes les cases vers le "haut"jusqu a ce qu le bateau est coulé
-                                while essai==False:
-                                    if cases[casebatx][casebaty-1].case_attaquee==False: 
-                                        cases[casebatx][casebaty-1].attacked()
-                                        essai=True
-                                    elif cases[casebatx][casebaty-2].case_attaquee==False:
-                                        cases[casebatx][casebaty-2].attacked()
-                                        essai=True
-                                    elif cases[casebatx][casebaty-3].case_attaquee==False: 
-                                        cases[casebatx][casebaty-3].attacked()
-                                        essai=True
-                                    elif cases[casebatx][casebaty-4].case_attaquee==False: 
-                                        cases[casebatx][casebaty-4].attacked()
-                                        essai=True
-                                        
-                            else:
-                                if cases[casebatx][casebaty+1].case_attaquee==False: #l'ia attaque dans une direction jusqu'à ce qu'il n'ait plus de case bateau, elle set donc le direction="haut"
-                                    cases[casebatx][casebaty+1].attacked()
-                                    essai=True
-                                    if cases[casebatx][casebaty+1].bateau==False:
-                                        direction="haut"
-                                            
-                                elif cases[casebatx][casebaty+2].case_attaquee==False: 
-                                    cases[casebatx][casebaty+2].attacked()
-                                    essai=True
-                                    if cases[casebatx][casebaty+2].bateau==False:
-                                        direction="haut"
-                                        
-                                elif cases[casebatx][casebaty+3].case_attaquee==False:
-                                    cases[casebatx][casebaty+3].attacked()
-                                    essai=True
-                                    if cases[casebatx][casebaty+3].bateau==False:
-                                        direction="haut"
-
-                                elif cases[casebatx][casebaty+4].case_attaquee==False:
-                                    cases[casebatx][casebaty+4].attacked()
-                                    essai=True
-                                    if cases[casebatx][casebaty+4].bateau==False:
-                                        direction="haut"
-                                    
-
-                        except IndexError:
-                            pass
-
+            except TypeError:
+                pass
             
-            if sens=="horizontal": #si le sens est connu et qu'il est "horiontal"
-                essai=False
-                if ships[quel_bateau(cases[casebatx][casebaty])].bateau_en_vie(ships)== 1:  #si le bateau est coulé, l'ia attaque aléatoirement a nouveau
+            else:
+                
+                while essai==False:
+                    try:
+                        if direction=="haut":           #si la direction (qui est déterminer en dessous) est connue l'ia attaque toutes les cases vers le "haut"jusqu a ce qu le bateau est coulé
+                            while essai==False:
+                                if cases[casebatx][casebaty-1].case_attaquee==False: 
+                                    cases[casebatx][casebaty-1].attacked()
+                                    essai=True
+                                elif cases[casebatx][casebaty-2].case_attaquee==False:
+                                    cases[casebatx][casebaty-2].attacked()
+                                    essai=True
+                                elif cases[casebatx][casebaty-3].case_attaquee==False: 
+                                    cases[casebatx][casebaty-3].attacked()
+                                    essai=True
+                                elif cases[casebatx][casebaty-4].case_attaquee==False: 
+                                    cases[casebatx][casebaty-4].attacked()
+                                    essai=True
+                                    
+                        else:
+                            if cases[casebatx][casebaty+1].case_attaquee==False: #l'ia attaque dans une direction jusqu'à ce qu'il n'ait plus de case bateau, elle set donc le direction="haut"
+                                cases[casebatx][casebaty+1].attacked()
+                                essai=True
+                                if cases[casebatx][casebaty+1].bateau==False:
+                                    direction="haut"
+                                        
+                            elif cases[casebatx][casebaty+2].case_attaquee==False: 
+                                cases[casebatx][casebaty+2].attacked()
+                                essai=True
+                                if cases[casebatx][casebaty+2].bateau==False:
+                                    direction="haut"
+                                    
+                            elif cases[casebatx][casebaty+3].case_attaquee==False:
+                                cases[casebatx][casebaty+3].attacked()
+                                essai=True
+                                if cases[casebatx][casebaty+3].bateau==False:
+                                    direction="haut"
+
+                            elif cases[casebatx][casebaty+4].case_attaquee==False:
+                                cases[casebatx][casebaty+4].attacked()
+                                essai=True
+                                if cases[casebatx][casebaty+4].bateau==False:
+                                    direction="haut"
+                                
+
+                    except IndexError:
+                        pass
+
+        
+        if sens=="horizontal": #si le sens est connu et qu'il est "horiontal"
+            essai=False
+            try:
+                if ships[quel_bateau(cases[casebatx][casebaty])].bateau_en_vie(ships)== 0:  #si le bateau est coulé, l'ia attaque aléatoirement a nouveau
                     sens="none"
                     direction="none"
-                else:
-                    while essai==False:
-                        try:
-                            if direction=="gauche":
-                                while essai==False:
-                                    if cases[casebatx-1][casebaty].case_attaquee==False:    # attaque à gauche de la cases[casebatx][casebaty] jusqu'à ce que le bateau soit coulé
-                                        cases[casebatx-1][casebaty].attacked()
-                                        essai=True
-                                    elif cases[casebatx-2][casebaty].case_attaquee==False: 
-                                        cases[casebatx-2][casebaty].attacked()
-                                        essai=True
-                                    elif cases[casebatx-3][casebaty].case_attaquee==False: 
-                                        cases[casebatx-3][casebaty].attacked()
-                                        essai=True
-                                    elif cases[casebatx-4][casebaty].case_attaquee==False:
-                                        cases[casebatx-4][casebaty].attacked()
-                                        essai=True
-                            else:
-                                if cases[casebatx+1][casebaty].case_attaquee==False:    #determination de la direction ou seulement attauqe dans un sens
-                                    cases[casebatx+1][casebaty].attacked()
+            except TypeError:
+                pass
+            else:
+                while essai==False:
+                    try:
+                        if direction=="gauche":
+                            while essai==False:
+                                if cases[casebatx-1][casebaty].case_attaquee==False:    # attaque à gauche de la cases[casebatx][casebaty] jusqu'à ce que le bateau soit coulé
+                                    cases[casebatx-1][casebaty].attacked()
                                     essai=True
-                                    if cases[casebatx+1][casebaty].bateau==False:
-                                        direction="gauche"
-                                        
-                                elif cases[casebatx+2][casebaty].case_attaquee==False:
-                                    cases[casebatx+2][casebaty].attacked()
+                                elif cases[casebatx-2][casebaty].case_attaquee==False: 
+                                    cases[casebatx-2][casebaty].attacked()
                                     essai=True
-                                    if cases[casebatx+2][casebaty].bateau==False:
-                                        direction="gauche"
-                                elif cases[casebatx+3][casebaty].case_attaquee==False:
-                                    cases[casebatx+3][casebaty].attacked()
+                                elif cases[casebatx-3][casebaty].case_attaquee==False: 
+                                    cases[casebatx-3][casebaty].attacked()
                                     essai=True
-                                    if cases[casebatx+3][casebaty].bateau==False:
-                                        direction="gauche"
-
-                                elif cases[casebatx+4][casebaty].case_attaquee==False: 
-                                    cases[casebatx+4][casebaty].attacked()
+                                elif cases[casebatx-4][casebaty].case_attaquee==False:
+                                    cases[casebatx-4][casebaty].attacked()
                                     essai=True
-                                    if cases[casebatx+4][casebaty].bateau==False:
-                                        direction="gauche"
-    
-                        except IndexError:
-                            pass
-        
-            if sens=="unknown":     #si un bateau a été touché mais l'ordinateur ne sait pas dans quel sens se trouve les autres cases
-                try:
-                    essai=False     #la variable qui check si une case a été attaqué
-                    while essai==False:     #l'ia attaque aléatoirement la case au dessus, en dessous a droite et a gauche pour déterminer le sens
-                        random=ranai()
-                        if random==1:
-                            if cases[casebatx+1][casebaty].case_attaquee==False:    #seulement attaqué une case non-attaquée
+                        else:
+                            if cases[casebatx+1][casebaty].case_attaquee==False:    #determination de la direction ou seulement attauqe dans un sens
                                 cases[casebatx+1][casebaty].attacked()
-                                if cases[casebatx+1][casebaty].bateau==True:        #si un bateau s'y trouuve alors le sens="horizontal" car x et non y a changé
-                                    sens="horizontal"
-                                else:
-                                    sens="unknown"                                  #sinon le sens est encore inconnu et c'est au joueur de jouer car aucune case avec un bateau n'a été touchée
                                 essai=True
+                                if cases[casebatx+1][casebaty].bateau==False:
+                                    direction="gauche"
                                     
-                                    
-                        if random==2:
-                            if cases[casebatx-1][casebaty].case_attaquee==False:
-                                cases[casebatx-1][casebaty].attacked()
-                                if cases[casebatx-1][casebaty].bateau==True:
-                                    sens="horizontal"
-                                else:
-                                    sens="unknown"
+                            elif cases[casebatx+2][casebaty].case_attaquee==False:
+                                cases[casebatx+2][casebaty].attacked()
                                 essai=True
+                                if cases[casebatx+2][casebaty].bateau==False:
+                                    direction="gauche"
+                            elif cases[casebatx+3][casebaty].case_attaquee==False:
+                                cases[casebatx+3][casebaty].attacked()
+                                essai=True
+                                if cases[casebatx+3][casebaty].bateau==False:
+                                    direction="gauche"
+
+                            elif cases[casebatx+4][casebaty].case_attaquee==False: 
+                                cases[casebatx+4][casebaty].attacked()
+                                essai=True
+                                if cases[casebatx+4][casebaty].bateau==False:
+                                    direction="gauche"
+
+                    except IndexError:
+                        pass
+    
+        if sens=="unknown":     #si un bateau a été touché mais l'ordinateur ne sait pas dans quel sens se trouve les autres cases
+            essai=False     #la variable qui check si une case a été attaqué
+            while essai==False:     #l'ia attaque aléatoirement la case au dessus, en dessous a droite et a gauche pour déterminer le sens
+                random=0
+                random=ranai()
+                if random==1:
+                    try:
+                        if cases[casebatx+1][casebaty].case_attaquee==False:    #seulement attaqué une case non-attaquée
+                            cases[casebatx+1][casebaty].attacked()
+                            essai=True
+                            if cases[casebatx+1][casebaty].bateau==True:        #si un bateau s'y trouuve alors le sens="horizontal" car x et non y a changé
+                                sens="horizontal"
+                            else:
+                                sens="unknown"                                  #sinon le sens est encore inconnu et c'est au joueur de jouer car aucune case avec un bateau n'a été touchée
+            
+                    except IndexError: 
+                        aiattack()
+                            
+                elif random==2:
+                    try:
+                        if cases[casebatx-1][casebaty].case_attaquee==False:
+                            cases[casebatx-1][casebaty].attacked()
+                            essai=True
+                            if cases[casebatx-1][casebaty].bateau==True:
+                                sens="horizontal"
+                            else:
+                                sens="unknown"
+                    except IndexError: 
+                        aiattack()
+                        
+                elif random==3:
+                    try:
+                        if cases[casebatx][casebaty+1].case_attaquee==False:   
+                            cases[casebatx][casebaty+1].attacked()
+                            essai=True
+                            if cases[casebatx][casebaty+1].bateau==True:
+                                sens="vertical"
+                            else:
+                                sens="unknown"
+                    except IndexError: 
+                        aiattack()
+                elif random==4:
+                    try:
+                        if cases[casebatx][casebaty-1].case_attaquee==False:
+                            cases[casebatx][casebaty-1].attacked()
+                            essai=True
+                            if cases[casebatx][casebaty-1].bateau==True:
+                                sens="vertical"
+                            else:
+                                sens="unknown"
+                    except IndexError: 
+                        aiattack()
                                 
-                        if random==3:
-                            if cases[casebatx][casebaty+1].case_attaquee==False:   
-                                cases[casebatx][casebaty+1].attacked()
-                                if cases[casebatx][casebaty+1].bateau==True:
-                                    sens="vertical"
-                                else:
-                                    sens="unknown"
-                                essai=True
-                        if random==4:
-                            if cases[casebatx][casebaty-1].case_attaquee==False:
-                                cases[casebatx][casebaty-1].attacked()
-                                essai==True
-                                if cases[casebatx][casebaty-1].bateau==True:
-                                    sens="vertical"
-                                else:
-                                    sens="unknown"
-                                essai=True
-                                    
-                except IndexError: 
-                    pass   
-                
-            if sens=="none":            #par défault le sens est "none", l'ia n'a aucune information sur la position des bateaux
-                a,b=rancoord()          #des coordonnées aléatoire sont données (voir rancoord())
-                while cases[a][b].case_attaquee==True: #determination de coordonées aleatoires qui n'ont pas encore été attaquée
-                    a,b=rancoord()
-                cases[a][b].attacked()
-                if cases[a][b].bateau==True:    #si un bateau se trouve sur cette case
-                    sens="unknown"              #le sens="unknown" pour qu'au prochain tour 'l'ia sait où attaquer
-                    casebatx=a                  #les coordonées sont enregistrées
-                    casebaty=b
-        except IndexError:          #si une Erreur d'index occure
-            pass                    #ignorer
-        
+        if sens=="none":            #par défault le sens est "none", l'ia n'a aucune information sur la position des bateaux
+            a,b=rancoord()          #des coordonnées aléatoire sont données (voir rancoord())
+            while cases[a][b].case_attaquee==True: #determination de coordonées aleatoires qui n'ont pas encore été attaquée
+                a,b=rancoord()
+            cases[a][b].attacked()
+            if cases[a][b].bateau==True:    #si un bateau se trouve sur cette case
+                sens="unknown"              #le sens="unknown" pour qu'au prochain tour 'l'ia sait où attaquer
+                casebatx=a                  #les coordonées sont enregistrées
+                casebaty=b
+    
         if hit()==True:             #si un bateau a été touché par l'ia (voir hit())
             cadre.after(300, aiattack) #attendre 300ms, puis executer aiattack()
         else:
@@ -574,6 +587,7 @@ def aiattack():
     
     else:
         information.itemconfigure(1, text='It is your turn to play.')
+        
 
         
 caseadversaire=[]   #créations des objets grace au classe ai et case
