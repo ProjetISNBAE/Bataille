@@ -213,13 +213,15 @@ class ship:
         liste.append(liste2[x][y])
         
     def bateau_en_vie(self, liste):
-        global boat_sunk
         level=0 #niveau de vie du bateau (sous forme de compteur)
         for i in range(self.length):
-            if self.endroits[i].case_attaquee==False:
-                level=level+1
+            if liste==ships:
+                if self.endroits[i].case_attaquee==False:
+                    level=level+1
+            else:
+                if self.projection[i].case_attaquee==False:
+                    level=level+1
         return level/self.length #renvoie le niveau de vie du bateau 
-
 
         
 class ai: #classe pour casesadversaire (voir classe case)
