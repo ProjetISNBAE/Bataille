@@ -90,7 +90,7 @@ class case: #création des cases du terrainde jeu
             player_turn=True
         return couleur
     
-    def click(self, event): #fonction se lançant lorsqu'on clique sur la case
+    def click(self, event): #fonction se lançant lorsqu'on clique sur la case, servant à placer les bateaux
         global game_mode
         global orientation
         global bl
@@ -98,19 +98,17 @@ class case: #création des cases du terrainde jeu
         global ships
         global shipsai
         global caseadversaire
-        environs=True
-        if game_mode==False:
-            if selectable==False:
-                ships.append(ship(bl,orientation))
-                bateau_selectionne=ships[len(ships)-1]
-                bateau_selectionne.projet(self.x, self.y, cases)
-                for i in range(len(bateau_selectionne.projection)):
-                    print(bateau_selectionne.projection[i])
-                    print(bateau_selectionne.projection[i].check_surrounding())
+        environs=True 
+        if game_mode==False: #si game_mode==True, le joueur n'a plus a toucher a ces cases, seulement à celles de l'ia.
+            if selectable==False: #si selectable==True, le joueur n'a pas selectionné de bateau, il ne peut donc pas en placer.
+                ships.append(ship(bl,orientation)) #maintenant que le joueur est bien en train de placer un bateau, on crée le bateau dans la liste des bateaux
+                bateau_selectionne=ships[len(ships)-1] #le bateau lequel on place est donc le dernier élément de la liste à l'indice (longueur-1)
+                bateau_selectionne.projet(self.x, self.y, cases) #on crée une liste de cases où on veut placer le bateau
+                for i in range(len(bateau_selectionne.projection)): #pour chaque case de la projection on va tester si le bateau peut etre placé légalement 
                     if bateau_selectionne.projection[i].check_surrounding()==False:
                         information.itemconfigure(1, text='Boats can not be adjacent.')
                         environs=False
-                        ships.pop()
+                        ships.pop() #si on ne peut pas, on enleve le bateau de la liste p
                 if environs==True:
                     if bateau_selectionne.check_placement(self.x, self.y)==False:
                         information.itemconfigure(1, text='Boat out of area.')
