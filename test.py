@@ -409,7 +409,7 @@ def aiattack():
         if sens=="vertical":                #si le sens est connu et qu'il est "verticale"
             essai=False
             try:
-                if ships[quel_bateau(cases[casebatx][casebaty])].bateau_en_vie(ships)== 0:  #si le bateau est coulé, l'ia attaque aléatoirement a nouveau
+                if ships[quel_bateau(cases[casebatx][casebaty])].bateau_en_vie(ships)==0:  #si le bateau est coulé, l'ia attaque aléatoirement a nouveau
                     sens="none"
                     direction="none"
             except TypeError:
@@ -532,7 +532,7 @@ def aiattack():
                                 sens="unknown"                                  #sinon le sens est encore inconnu et c'est au joueur de jouer car aucune case avec un bateau n'a été touchée
             
                     except IndexError: 
-                        aiattack()
+                        pass
                             
                 elif random==2:
                     try:
@@ -544,7 +544,7 @@ def aiattack():
                             else:
                                 sens="unknown"
                     except IndexError: 
-                        aiattack()
+                        pass
                         
                 elif random==3:
                     try:
@@ -556,7 +556,7 @@ def aiattack():
                             else:
                                 sens="unknown"
                     except IndexError: 
-                        aiattack()
+                        pass
                 elif random==4:
                     try:
                         if cases[casebatx][casebaty-1].case_attaquee==False:
@@ -567,7 +567,7 @@ def aiattack():
                             else:
                                 sens="unknown"
                     except IndexError: 
-                        aiattack()
+                        pass
                                 
         if sens=="none":            #par défault le sens est "none", l'ia n'a aucune information sur la position des bateaux
             a,b=rancoord()          #des coordonnées aléatoire sont données (voir rancoord())
