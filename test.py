@@ -17,9 +17,9 @@ aitotalhits=0
 aihits=0
 userhits=0
 
-orientation='N'#ffaudra voir si on le fait rester à ce que cest ou si on le fait revenir a N
-game_mode=False
-player_turn=False  #Variable boouléenne qui vérifie que assure le respect du tour de jeu 
+orientation='N' #Orientation par défaut des bateaux à placer
+game_mode=False #sépare le moment de placement des bateaux du moment de jeu 
+player_turn=False  #Variable booléenne qui vérifie que assure le respect du tour de jeu 
 bateau_en_vie=True
 #==============================================================================
 
@@ -31,14 +31,14 @@ cadre=tk.Canvas(master, width=largeurcadre, height=hauteurcadre,bg="white")
 cadre.grid(column=0, row=0)
 
 
-def gamemode():        #Seperates the moment of boat placement from the game play
-    global game_mode
+def gamemode():  #fonction qui est appelé une fois que tous les bateaux de l'utilisateur sont placés
+    global game_mode 
     global player_turn
-    game_mode=True
-    cadre.configure(cursor='boat')
-    master.configure(cursor='boat')
+    game_mode=True  # active le moment de jeu, les clicks de cases seront désormais exclusivement rattachés à des attaques 
+    cadre.configure(cursor='boat')   
+    master.configure(cursor='boat') #le changement de curseur offre une représentation visuelle du mode de jeu en cours
     boatframe.configure(cursor='boat')
-    player_turn=True
+    player_turn=True   #l'utilisateur commence par défaut
 
 class case:
     def __init__(self, x, y):
@@ -232,9 +232,9 @@ class ship:
             if self.endroits[i].case_attaquee==True:
                 level=level+1
         lvl= int(level/self.length)
-        if lvl==1:
+        if lvl==1: #si le niveau est à 1 c'est que le nombre de cases attaqués du bateau est égale au nombre de cases totales du bateau, donc ce dernier est entièrement attaqué
             bateau_en_vie=False 
-            print('boat fully attacked')
+            print('Boat fully attacked.')
             for i in range(self.length):
                 switch_turn()
                 self.endroits[i].draw()
@@ -607,77 +607,66 @@ boatframe=tk.Canvas(master, width=450, height=300)
 boatframe.grid(column=1,row=0, sticky="N")
 
 selectable=True #variable qui assure que seulement un bateau soit séléctionné à la fois
-bl=0
+bl=0 #variable à laquelle on associe la longeur du bateau à placer 
 
 b5_coord = (l+300),(h-40), (l+300),h, (l+50),h, (l+50),(h-40)
 b4_coord = (l+270),(h+30), (l+270),(h+70), (l+80),(h+70), (l+80),(h+30)
 b3_coord = (l+240),(h+100), (l+240),(h+140), (l+110),(h+140), (l+110),(h+100)
 b2_coord = (l+210),(h+170), (l+210),(h+210), (l+140),(h+210), (l+140),(h+170)
-    
-"""
-    for i in range (2,5): 
-        bi=boatframe.create_polygon(bi_coord, fill="blue")
-        def clicked_bi(event):
-            print("Boat i selected")
-            boatframe.create_polygon(bi_coord, fill="grey")
-        boatframe.tag_bind(bi,"<Button-1>",clicked_bi)
-"""
-    
-b5=boatframe.create_polygon(b5_coord, fill="blue")
+        
+b5=boatframe.create_polygon(b5_coord, fill="blue")  #représentation visuelle des tailles de bateaux à placer
 b4=boatframe.create_polygon(b4_coord, fill="blue")
 b3=boatframe.create_polygon(b3_coord, fill="blue")
 b2=boatframe.create_polygon(b2_coord, fill="blue")
 
-compteur_b5=1
-compteur_b4=1
-compteur_b3=2
+compteur_b5=1  #  Certaines tailles de bateaux ont plusieurs bateaux à placer de leurs types.
+compteur_b4=1  #  Les compteurs ci-contre permettent d'assurer que le bon nombre de bateaux
+compteur_b3=2  #  soit placé. 
 compteur_b2=3
 
-nb_5=boatframe.create_text((l+320),(h-20), text='x 1')
+nb_5=boatframe.create_text((l+320),(h-20), text='x 1')  # Indicateurs du nombre restant de bateaux à placer
 nb_4=boatframe.create_text((l+290),(h+50), text='x 1')
 nb_3=boatframe.create_text((l+260),(h+120), text='x 2')
 nb_2=boatframe.create_text((l+230),(h+190), text='x 3')
- 
-c_selected=0
    
-def clicked_b5(event):
+def clicked_b5(event): #fonction associé au bateau de taille 5 
     global bl
     global selectable 
-    info()
-    global compteur_b5
-    if compteur_b5==0:
+    info()  # appel une fonction qui donne à l'utilisateur des instructions pour placer les bateaux
+    global compteur_b5 
+    if compteur_b5==0: # vérifie que l'utilisateur n'as pas déjà placé tous les bateaux de cette taille
         information.itemconfigure(1, text='Tous les bateaux de cette categorie ont ete places')
     else:
-        if selectable==True:
-            selectable=False
+        if selectable==True: #vérifie qu'un autre bateau n'as pas déjà été sélectionné 
+            selectable=False # cela permettra de selectionner un nouveau bateau par la suite
             print("Boat 5 selected")
-            boatframe.itemconfigure(1, fill="grey")
-            rotate_north(event)
-            bl=5
-            compteur_b5=compteur_b5-1
-            boatframe.itemconfigure(5, text='x '+str(compteur_b5))
+            boatframe.itemconfigure(1, fill="grey") #1 correspond à l'identité du polygone représentant le bateau 5, cela le rend gris
+            rotate_north(event) #orientation du bateau à placé par défaut 
+            bl=5 #défini la longeur du bateau à placer 
+            compteur_b5=compteur_b5-1 #actualise la valeur du compteur, il y en à unde moins à placer 
+            boatframe.itemconfigure(5, text='x '+str(compteur_b5)) #actualise également le compteur visuel (5 étant l'id du text widget)
         else:
-            information.itemconfigure(1, text="Veuillez placer le bateau avant de selectionner un autre.")
-
-def clicked_b4(event):
+            information.itemconfigure(1, text="Veuillez placer le bateau avant de selectionner un autre.")# vérifie que l'utilisateur n'ait pas fait une erreur 
+                                                                                  # de saisie du type sélectionner plusiers bateaux simultanément et l'informe dans le cas contraire
+def clicked_b4(event): #fonction associé au bateau de taille 4                                       
     global bl
     global selectable 
-    info()
+    info()   # appel une fonction qui donne à l'utilisateur des instructions pour placer les bateaux
     global compteur_b4
-    if compteur_b4==0:
+    if compteur_b4==0: # vérifie que l'utilisateur n'as pas déjà placé tous les bateaux de cette taille
         information.itemconfigure(1, text='Tous les bateaux de cette categorie ont ete places')
     else:
-        if selectable==True:
-            selectable=False
+        if selectable==True: #vérifie qu'un autre bateau n'as pas déjà été sélectionné 
+            selectable=False  # cela permettra de selectionner un nouveau bateau par la suite
             print("Boat 4 selected")
-            boatframe.itemconfigure(2, fill="grey")
-            rotate_north(event)
-            bl=4
-            compteur_b4=compteur_b4-1
+            boatframe.itemconfigure(2, fill="grey")# 2 correspond à l'identité du polygone représentant le bateau 4, cela le rend gris
+            rotate_north(event)  #orientation du bateau à placé par défaut 
+            bl=4 #défini la longeur du bateau à placer 
+            compteur_b4=compteur_b4-1 #actualise la valeur du compteur, il y en à unde moins à placer 
             boatframe.itemconfigure(6, text='x '+str(compteur_b4))
         else:
-            information.itemconfigure(1, text="Veuillez placer le bateau avant de selectionner un autre.")
-            
+            information.itemconfigure(1, text="Veuillez placer le bateau avant de selectionner un autre.") # vérifie que l'utilisateur n'ait pas fait une erreur 
+                                                                            # de saisie du type sélectionner plusiers bateaux simultanément et l'informe dans le cas contraire            
 def clicked_b3(event):
     global bl
     global selectable 
@@ -686,21 +675,21 @@ def clicked_b3(event):
     if compteur_b3==0:
         information.itemconfigure(1, text='Tous les bateaux de cette categorie ont ete places')
     else:
-        if selectable==True:
+        if selectable==True: #vérifie qu'un autre bateau n'as pas déjà été sélectionné 
             print("Boat 3 selected")
-            selectable=False
+            selectable=False # cela permettra de selectionner un nouveau bateau par la suite
             if compteur_b3==2: 
-                boatframe.itemconfigure(3, fill='#A9CCE3')
-                boatframe.itemconfigure(7, text='x 1')
+                boatframe.itemconfigure(3, fill='#A9CCE3') #3 correspond à l'identité du polygone représentant le bateau 3, cela le rend gris
+                boatframe.itemconfigure(7, text='x 1')  #actualise également le compteur visuel (7 étant l'id du text widget)
             elif compteur_b3==1:
                 boatframe.itemconfigure(3, fill='grey')
                 boatframe.itemconfigure(7, text='x 0')
-            rotate_north(event)
-            bl=3    
-            compteur_b3=compteur_b3-1
+            rotate_north(event)  #orientation du bateau à placé par défaut 
+            bl=3    #défini la longeur du bateau à placer 
+            compteur_b3=compteur_b3-1  #actualise la valeur du compteur, il y en à unde moins à placer 
         else: 
-            information.itemconfigure(1, text="Veuillez placer le bateau avant de selectionner un autre.")
-            
+            information.itemconfigure(1, text="Veuillez placer le bateau avant de selectionner un autre.")# vérifie que l'utilisateur n'ait pas fait une erreur 
+                                                                           # de saisie du type sélectionner plusiers bateaux simultanément et l'informe dans le cas contraire           
 def clicked_b2(event):
     global bl
     global selectable 
@@ -713,7 +702,7 @@ def clicked_b2(event):
             print("Boat 2 selected")
             selectable=False
             if compteur_b2==3: 
-                boatframe.itemconfigure(4, fill='#5DADE2')
+                boatframe.itemconfigure(4, fill='#5DADE2') #4 correspond à l'identité du polygone représentant le bateau 2, cela le rend gris
                 boatframe.itemconfigure(8, text='x 2')
             elif compteur_b2==2:
                 boatframe.itemconfigure(4, fill='#A9CCE3')
@@ -721,59 +710,60 @@ def clicked_b2(event):
             elif compteur_b2==1:
                 boatframe.itemconfigure(4, fill='grey')
                 boatframe.itemconfigure(8, text='x 0')        
-            rotate_north(event)
-            bl=2    
-            compteur_b2=compteur_b2-1
+            rotate_north(event)  #orientation du bateau à placé par défaut 
+            bl=2    #défini la longeur du bateau à placer 
+            compteur_b2=compteur_b2-1  #actualise la valeur du compteur, il y en à unde moins à placer 
         else: 
-            information.itemconfigure(1, text="Veuillez placer le bateau avant de selectionner un autre.")
-            
+            information.itemconfigure(1, text="Veuillez placer le bateau avant de selectionner un autre.") # vérifie que l'utilisateur n'ait pas fait une erreur 
+                                                                # de saisie du type sélectionner plusiers bateaux simultanément et l'informe dans le cas contraire
 
-def rotate_north(event): #Default orientation
+def rotate_north(event): #Fonction respective de l'orientation Nord (orientation par défaut)
     global orientation
-    cadre.configure(cursor='sb_up_arrow')
+    cadre.configure(cursor='sb_up_arrow') # Modifie le curseur en flèche pour représenter visuellement le choix d'orientation à l'utilisateur
     boatframe.configure(cursor='sb_up_arrow')
-    orientation='N'
-def rotate_east(event):
+    orientation='N' #défini l'orientation du bateau à placé
+def rotate_east(event): #Fonction respective de l'orientation Est
     global orientation
-    cadre.configure(cursor='sb_left_arrow')
+    cadre.configure(cursor='sb_left_arrow') # Modifie le curseur en flèche pour représenter visuellement le choix d'orientation à l'utilisateur
     boatframe.configure(cursor='sb_left_arrow')
-    orientation='E'
-def rotate_south(event):
+    orientation='E' #défini l'orientation du bateau à placé
+def rotate_south(event): #Fonction respective de l'orientation Sud
     global orientation
-    cadre.configure(cursor='sb_down_arrow')
+    cadre.configure(cursor='sb_down_arrow') # Modifie le curseur en flèche pour représenter visuellement le choix d'orientation à l'utilisateur
     boatframe.configure(cursor='sb_down_arrow')
-    orientation='S'
-def rotate_west(event):
+    orientation='S' #défini l'orientation du bateau à placé
+def rotate_west(event): #Fonction respective de l'orientation Ouest
     global orientation
-    cadre.configure(cursor='sb_right_arrow')
+    cadre.configure(cursor='sb_right_arrow') # Modifie le curseur en flèche pour représenter visuellement le choix d'orientation à l'utilisateur
     boatframe.configure(cursor='sb_right_arrow')
-    orientation='W'
+    orientation='W' #défini l'orientation du bateau à placé
 
-boatframe.tag_bind(b5,"<Button-1>",clicked_b5)
-boatframe.tag_bind(b4,"<Button-1>",clicked_b4)
+boatframe.tag_bind(b5,"<Button-1>",clicked_b5)  # Associe le click des polygones représentant les bateaux
+boatframe.tag_bind(b4,"<Button-1>",clicked_b4)  # à leurs fonctions respectives. 
 boatframe.tag_bind(b3,"<Button-1>",clicked_b3)
 boatframe.tag_bind(b2,"<Button-1>",clicked_b2)
-master.bind('<Left>', rotate_east)
+master.bind('<Left>', rotate_east)  # Associe les touches directionelles à leurs fonctions respectives 
 master.bind('<Up>', rotate_north)
 master.bind('<Down>', rotate_south)
 master.bind('<Right>', rotate_west)
 
 #====================================================================
-def switch_turn():
+def switch_turn():     #change le tour de jeu 
     global player_turn
     if player_turn==False:
         player_turn=True
     else:
         player_turn=False
+        
 #======================== Info box ==================================
-information=tk.Canvas(master, width=300, height=300)
-information.grid(column=1,row=0, sticky='S')
+# Ces informations serviront à informer l'utilisateur des instructions, de la manipulation de l'interface et d'erreurs éventuelles de saisies 
+information=tk.Canvas(master, width=300, height=300)  #définition d'une partie de canvas dédié aux informations pour l'utilisateur
+information.grid(column=1,row=0, sticky='S') #placement en bas à droite de ce panneau d'informations 
 
-info=information.create_text(150,20, text='Select boats above to begin.')
+info=information.create_text(150,20, text='Select boats above to begin.') #text par défaut 
 
-def info():
-    if c_selected==0:
-        information.itemconfigure(1, text='Use arrow keys to modify the orientation of the boat. \n Place boats on the bottom grid, this one is yours.')
+def info(): #fonction qui modifie le panneau pour apporter plus d'instructions sur le jeu
+    information.itemconfigure(1, text='Use arrow keys to modify the orientation of the boat. \n Place boats on the bottom grid, this one is yours.')
 #====================================================================
 vies=tk.Canvas(master, width=300, height=300)
 vies.grid(column=2,row=0)
