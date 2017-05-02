@@ -104,65 +104,53 @@ class case: #création des cases du terrainde jeu
                 ships.append(ship(bl,orientation)) #maintenant que le joueur est bien en train de placer un bateau, on crée le bateau dans la liste des bateaux
                 bateau_selectionne=ships[len(ships)-1] #le bateau lequel on place est donc le dernier élément de la liste à l'indice (longueur-1)
                 bateau_selectionne.projet(self.x, self.y, cases) #on crée une liste de cases où on veut placer le bateau
-                for i in range(len(bateau_selectionne.projection)): #pour chaque case de la projection on va tester si le bateau peut etre placé légalement 
+                for i in range(len(bateau_selectionne.projection)): #pour chaque case de la projection on va tester si le bateau peut etre placé légalement, c'est a dire pas directement à coté d'un autre
                     if bateau_selectionne.projection[i].check_surrounding()==False:
                         information.itemconfigure(1, text='Boats can not be adjacent.')
                         environs=False
-                        ships.pop() #si on ne peut pas, on enleve le bateau de la liste p
-                if environs==True:
-                    if bateau_selectionne.check_placement(self.x, self.y)==False:
+                        ships.pop() #si on ne peut pas, on enleve le bateau de la liste, car il n'est pas réellement créé
+                if environs==True: 
+                    if bateau_selectionne.check_placement(self.x, self.y)==False: #on verifie ensuite que le bateau ne sorte pas du cadre
                         information.itemconfigure(1, text='Boat out of area.')
-                        ships.pop()
-                    else:
-                        bateau_selectionne.placement(self.x, self.y, cases)
-                        selectable=True
-                        all_placed()
-                        actualise()
-            else:   
-                if player_turn==True:
-                    None
-                else:
+                        ships.pop() #idem que precedemment
+                    else: #si toutes les conditions du bon placement son remplies
+                        bateau_selectionne.placement(self.x, self.y, cases) #on place le bateau,
+                        selectable=True #on rend selectionnables les autres bateaux
+                        all_placed() #on regarde si tous les autres bateaux ont été placés
+                        actualise() #on actualise les barres de vies, afin qu'elles s'afichent correctement
+            else: #affichage des messages d'erreur liées aux conditions initiales neccessaires pour un placement.
                     information.itemconfigure(1, text='Please select a boat to place.')
         else:
              information.itemconfigure(1, text='You are playing on the other field.')
-         
-    def check_self(self):
-        if self.bateau==True:
-            return False
-        else:
-            return True
             
             
-    def check_surrounding(self): #check s'il n'y a pas de bateau autour
-        xcoordinate=[-1,0,0,+1]
+    def check_surrounding(self): #fonction vérifiant que les cases adjacentes ne soient pas des bateaux
+        xcoordinate=[-1,0,0,+1] #Mathis cest a toi ca
         ycoordinate=[0,+1,-1,0]
         for i in range(4):
             try:
                 adjacent_case=cases[(self.x+xcoordinate[i])][self.y+(ycoordinate[i])]
-                #print(adjacent_case)
                 if adjacent_case.bateau==True:
                     return False
             except:
                     IndexError
         return True
                 
-                 
-    def checks(self):
-        return self.check_self() and self.check_surrounding()
         
 
                   
-class ship:
-    def __init__(self,l,orient):
+class ship: #creation des bateaux
+    def __init__(self,l,orient): #les bateaux sont créés en focntion de leur longueur et de leur orientation
         self.length=l
         self.orientation=orient
         self.endroits=[]
         self.projection=[]
-    def __repr__(self):
-        return str(self.length)
     
-    def check_placement(self, x, y):
-        if self.orientation=='S':  #vérifie que le bateau rentre dans le cadre
+    def __repr__(self):
+        return str(self.length) #ils sont représentés par leur longueur
+    
+    def check_placement(self, x, y) :#vérifie que le bateau rentre dans le cadre en fonction de son orientation
+        if self.orientation=='S':  
             if y+self.length>10:
                 return False
         elif self.orientation=='E':
@@ -175,7 +163,7 @@ class ship:
                 if x+self.length>10:
                     return False
         
-    def projet(self, x,y, liste):
+    def projet(self, x,y, liste): #création de la projection de la position du bateau
         try:
             for i in range(self.length):
                 if self.orientation=='S':  
@@ -189,11 +177,11 @@ class ship:
         except IndexError:
             return False
                     
-    def placement(self,x,y, liste):
+    def placement(self,x,y, liste): #placement du bateau en fonction de sa longueur et de son orientation
         for i in range(self.length):
             if self.orientation=='S':  
-                liste[x][y+i].boat()  
-                self.cases(self.endroits,x,y+i, liste)
+                liste[x][y+i].boat() #on change la propriété de la case concernée
+                self.cases(self.endroits,x,y+i, liste) #on ajoute la case à la liste des cases appartenant au bateau
             elif self.orientation=='E':
                 liste[x-i][y].boat()
                 self.cases(self.endroits,x-i,y, liste)
@@ -208,19 +196,19 @@ class ship:
         for i in range(self.length):
             self.projection[i].boat()
                     
-    def cases(self,liste,x,y, liste2):
+    def cases(self,liste,x,y, liste2): #fonction permettant de rajouter une case à une autre liste
         liste.append(liste2[x][y])
         
-    def bateau_en_vie(self, liste):
-        level=0 #niveau de vie du bateau (sous forme de compteur)
-        for i in range(self.length):
+    def bateau_en_vie(self, liste): #fonction permettant d'avoir le niveau de vie d'un bateau
+        level=0 
+        for i in range(self.length): #pour chaque case du bateau, on regarde si elle est attaquée, si non, on augmente "sa vie" de 1
             if liste==ships:
                 if self.endroits[i].case_attaquee==False:
                     level=level+1
-            else:
+            else: #cas différent pour les bateaux de l'ia, pour lesquels la liste endroits reste vide.
                 if self.projection[i].case_attaquee==False:
                     level=level+1
-        return level/self.length #renvoie le niveau de vie du bateau 
+        return level/self.length #renvoie le niveau de vie du bateau par rapport à sa longueur
 
         
 class ai: #classe pour casesadversaire (voir classe case)
@@ -761,59 +749,55 @@ info=information.create_text(150,20, text='Select boats above to begin.') #text 
 
 def info(): #fonction qui modifie le panneau pour apporter plus d'instructions sur le jeu
     information.itemconfigure(1, text='Use arrow keys to modify the orientation of the boat. \n Place boats on the bottom grid, this one is yours.')
-#====================================================================
-barres=tk.Canvas(master, height=150,width=1080)
+#======================= Barres de vie ==============================
+barres=tk.Canvas(master, height=150,width=1080)#creation d'un Canvas pour les barres de vie
 barres.grid(row=0,column=0, columnspan=2)
-def calcul_vie(liste):
+
+def calcul_vie(liste): #fonction calculant la "vie" d'un joueur
     longueur_totale=0
     vie=0
-    for i in range(len(liste)):
+    for i in range(len(liste)): #pour chaque bateau du joueur, on somme les longueurs et la vie
         longueur_totale=longueur_totale+liste[i].length
-        vie=vie+(liste[i].bateau_en_vie(liste)*liste[i].length)
-        #print('vie=',vie,'longueur totale=',longueur_totale)
-    if longueur_totale!=0:
-        #print(vie/longueur_totale*100)
-        return vie/longueur_totale*100
+        vie=vie+(liste[i].bateau_en_vie(liste)*liste[i].length
+    if longueur_totale!=0: #afin d'eviter des erreurs à l'initialisation
+        return vie/longueur_totale*100 #on renvoie la vie du joueuer sous forme de pourcentage
         
-class barre():
+class barre(): #creation des barres de vie
     def __init__(self, x,liste, nom):
-        
-        self.x=x
-        barres.create_rectangle(self.x,0,self.x+300,50, fill='grey')
-        self.bar=barres.create_rectangle(self.x,0,self.x+300,50, fill='blue')
-        print('jello')
+        self.x=x #coordonnée de départ sur l'axe x, permettant de positionner les barres l'une a coté de l'autre
+        barres.create_rectangle(self.x,0,self.x+300,50, fill='grey') #création du fond de la barre, qui ne changera pas
+        self.bar=barres.create_rectangle(self.x,0,self.x+300,50, fill='blue') #la barre elle-même
         self.name=nom
-        self.draw(liste)
+        self.liste=liste
+        self.draw()
         
         
-    def draw(self, liste):
-        barres.delete(self.bar)
-        if calcul_vie(ships)!=None:
-            self.bar=barres.create_rectangle(self.x,0,self.x+3*calcul_vie(liste),50, fill='blue')
-            barres.create_text(self.x+150,25, text=str(self.name)+': '+str(int(calcul_vie(liste)))+'%')
+    def draw(self): #dessin de la barre
+        barres.delete(self.bar) #on efface la barre précedente, pour pas que les barres se superposent
+        if calcul_vie(self.liste)!=None:#pour eviter encore des erreurs
+            self.bar=barres.create_rectangle(self.x,0,self.x+3*calcul_vie(liste),50, fill='blue') #recréation de la barre, cette fois en fonction du pourcentage de vie
+            barres.create_text(self.x+150,25, text=str(self.name)+': '+str(int(calcul_vie(self.liste)))+'%') #affichage de la valeur numérique pour plus de clarté
 
 barre_joueur=barre(0, ships, 'Joueur')
 barre_ai=barre(350, shipsai, 'AI')
-#====================================================================
+#===================================================================
 
+def actualise(): #fonction permettant d'actualiser les barres
+    barre_joueur.draw()
+    barre_ai.draw()
 
-
-def actualise():
-    barre_joueur.draw(ships)
-    barre_ai.draw(shipsai)
-
-def quel_bateau(case):
+def quel_bateau(case): #fonction permettant de "parler" au bateau cliqué, en testant si la case appartient a chaque bateau
     for i in range(len(ships)):
         for j in range(len(ships[i].endroits)):
             if ships[i].endroits[j]==case:
-                return i #ca te renvoie l'indice du bateau, genre cest le seul moyen de dire "quel bateau" cest
+                return i #renvoi de l'indice du bateau dans la liste, permettant de lui faire référence plus tard.
             
-def all_placed():
+def all_placed(): # test si tous les bateaux du joueur ont bien été placés.
     if compteur_b5==0 and compteur_b4==0 and compteur_b3==0 and compteur_b2==0:
-        gamemode()
-        boatframe.destroy()
+        gamemode() #on change le mode jeu
+        boatframe.destroy() #on enlève le selectionneur de bateaux
         information.itemconfigure(1, text='It is your turn to play.')
-        return True
+        return True #on renvoie que les bateaux ont bien été placés
     else:
         return False
 
