@@ -804,10 +804,10 @@ def calcul_vie(liste):
         #print(vie/longueur_totale*100)
         return vie/longueur_totale*100
         
-joueur=vies.create_text(150,20,text='Joueur:'+str(calcul_vie(ships))+'%')
+
 
 def actualise(liste):
-    vies.itemconfigure(1, text='Joueur:'+str(calcul_vie(liste))+'%')
+    barre_joueur.draw()
 
 def quel_bateau(case):
     for i in range(len(ships)):
