@@ -778,6 +778,7 @@ def calcul_vie(liste):
         
 class barre():
     def __init__(self, x):
+        barres.create_rectangle(0,0,300,50, fill='grey')
         self.bar=barres.create_rectangle(0,0,300,50, fill='blue')
         self.draw()
         
