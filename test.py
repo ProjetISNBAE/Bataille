@@ -218,7 +218,7 @@ class ship:
         for i in range(self.length):
             if self.endroits[i].case_attaquee==False:
                 level=level+1
-        return level/self.length #renvoi le niveau de vie du bateau 
+        return level/self.length #renvoie le niveau de vie du bateau 
 
 
         
