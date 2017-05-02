@@ -118,7 +118,7 @@ class case:
                         bateau_selectionne.placement(self.x, self.y, cases)
                         selectable=True
                         all_placed()
-                        actualise(ships)
+                        actualise()
             else:   
                 if player_turn==True:
                     self.attacked()
@@ -218,13 +218,6 @@ class ship:
         for i in range(self.length):
             if self.endroits[i].case_attaquee==False:
                 level=level+1
-        lvl= int(level/self.length)  #niveau de vie du bateau (sous forme de proportion de la taille du bateau)
-        if lvl==0: #si le niveau est à 1 c'est que le nombre de cases attaqués du bateau est égale au nombre de cases totales du bateau
-            boat_sunk=True # donc ce dernier est entièrement attaqué. On actualise donc la variable booléenne associé à cet événement
-            print('Boat fully attacked.')
-            for i in range(self.length): 
-                self.endroits[i].draw() # Modifie l'apparence du bateau coulé case par case
-            boat_sunk=False #Actualise la variable une fois que le bateau coulé à été représenté comme tel graphiquement 
         return level/self.length #renvoi le niveau de vie du bateau 
 
 
@@ -292,6 +285,7 @@ class ai: #classe pour casesadversaire (voir classe case)
                 cadre.after(300, aiattack)
         else:
             information.itemconfigure(1, text='It is not your turn to play.')
+        actualise()
         
     def color(self):
         global player_turn 
@@ -583,7 +577,7 @@ def aiattack():
     
     else:
         information.itemconfigure(1, text='It is your turn to play.')
-    actualise(ships)
+    actualise()
 
         
 caseadversaire=[]   #créations des objets grace au classe ai et case
@@ -759,8 +753,8 @@ info=information.create_text(150,20, text='Select boats above to begin.') #text 
 def info(): #fonction qui modifie le panneau pour apporter plus d'instructions sur le jeu
     information.itemconfigure(1, text='Use arrow keys to modify the orientation of the boat. \n Place boats on the bottom grid, this one is yours.')
 #====================================================================
-barres=tk.Canvas(master, height=150,width=600)
-barres.grid(row=0,column=0)
+barres=tk.Canvas(master, height=150,width=1080)
+barres.grid(row=0,column=0, columnspan=2)
 def calcul_vie(liste):
     longueur_totale=0
     vie=0
@@ -773,25 +767,31 @@ def calcul_vie(liste):
         return vie/longueur_totale*100
         
 class barre():
-    def __init__(self, x):
-        barres.create_rectangle(0,0,300,50, fill='grey')
-        self.bar=barres.create_rectangle(0,0,300,50, fill='blue')
-        self.draw()
+    def __init__(self, x,liste, nom):
         
-    def draw(self):
+        self.x=x
+        barres.create_rectangle(self.x,0,self.x+300,50, fill='grey')
+        self.bar=barres.create_rectangle(self.x,0,self.x+300,50, fill='blue')
+        print('jello')
+        self.name=nom
+        self.draw(liste)
+        
+        
+    def draw(self, liste):
         barres.delete(self.bar)
-        print(calcul_vie(ships))
         if calcul_vie(ships)!=None:
-            self.bar=barres.create_rectangle(0,0,3*calcul_vie(ships),50, fill='blue')
+            self.bar=barres.create_rectangle(self.x,0,self.x+3*calcul_vie(liste),50, fill='blue')
+            barres.create_text(self.x+150,25, text=str(self.name)+': '+str(int(calcul_vie(liste)))+'%')
 
-barre_joueur=barre(0)
-    
+barre_joueur=barre(0, ships, 'Joueur')
+barre_ai=barre(350, shipsai, 'AI')
 #====================================================================
 
 
 
-def actualise(liste):
-    barre_joueur.draw()
+def actualise():
+    barre_joueur.draw(ships)
+    barre_ai.draw(shipsai)
 
 def quel_bateau(case):
     for i in range(len(ships)):
