@@ -20,7 +20,7 @@ userhits=0
 orientation='N' #Orientation par défaut des bateaux à placer
 game_mode=False #sépare le moment de placement des bateaux du moment de jeu 
 player_turn=False  #Variable booléenne qui vérifie que assure le respect du tour de jeu 
-bateau_en_vie=True
+boat_sunk=False #Variable booléenne qui indique si le bateau en question est coulé ou non
 #==============================================================================
 
 master = tk.Tk()
@@ -57,7 +57,7 @@ class case:
     def draw(self):
         global bateau_en_vie
         rect=cadre.create_rectangle(self.xdebut,self.ydebut,self.xfin,self.yfin, fill=self.color())
-        if bateau_en_vie==False and self.color()=="red":
+        if boat_sunk==True and self.color()=="red":
             cadre.create_line(self.xdebut,self.ydebut,self.xfin,self.yfin,fill="black") 
             cadre.create_line(self.xdebut,self.yfin,self.xfin,self.ydebut,fill="black")
         
@@ -88,18 +88,6 @@ class case:
         if self.case_attaquee==False:
             self.case_attaquee=True
             self.draw()
-            
-            """def place(event):
-    global orientation
-    global bl
-    global selectable
-    global ships
-    if selectable==False:
-        s=ship(bl,orientation)    #ne fonctionne pas encore 
-        s.placement(event.x, event.y)
-        selectable=True
-    else:
-        print('Please select a boat to place.')"""
     
     def click(self, event):
         global game_mode
@@ -134,7 +122,6 @@ class case:
             else:   
                 if player_turn==True:
                     self.attacked()
-                    shipsai[quel_bateau(caseadversaire[self.x][self.y])].bateau_en_vie(shipsai)
                 else:
                     information.itemconfigure(1, text='It is not your turn to play.')
         else:
@@ -226,21 +213,19 @@ class ship:
         liste.append(liste2[x][y])
         
     def bateau_en_vie(self, liste):
-        global bateau_en_vie
-        level=0
+        global boat_sunk
+        level=0 #niveau de vie du bateau (sous forme de compteur)
         for i in range(self.length):
             if self.endroits[i].case_attaquee==True:
                 level=level+1
-        lvl= int(level/self.length)
-        if lvl==1: #si le niveau est à 1 c'est que le nombre de cases attaqués du bateau est égale au nombre de cases totales du bateau, donc ce dernier est entièrement attaqué
-            bateau_en_vie=False 
+        lvl= int(level/self.length)  #niveau de vie du bateau (sous forme de proportion de la taille du bateau)
+        if lvl==1: #si le niveau est à 1 c'est que le nombre de cases attaqués du bateau est égale au nombre de cases totales du bateau
+            boat_sunk=True # donc ce dernier est entièrement attaqué. On actualise donc la variable booléenne associé à cet événement
             print('Boat fully attacked.')
-            for i in range(self.length):
-                switch_turn()
-                self.endroits[i].draw()
-            bateau_en_vie=True 
-            switch_turn()
-        return lvl
+            for i in range(self.length): 
+                self.endroits[i].draw() # Modifie l'apparence du bateau coulé case par case
+            boat_sunk=False #Actualise la variable une fois que le bateau coulé à été représenté comme tel graphiquement 
+        return lvl #renvoi le niveau de vie du bateau 
 
 
         
@@ -288,7 +273,7 @@ class ai: #classe pour casesadversaire (voir classe case)
     def draw(self):
         global bateau_en_vie
         rect=cadre.create_rectangle(self.xdebut,self.ydebut,self.xfin,self.yfin, fill=self.color())
-        if bateau_en_vie==False and self.color()=="red":
+        if boat_sunk==True and self.color()=="red":
             cadre.create_line(self.xdebut,self.ydebut,self.xfin,self.yfin,fill="black") 
             cadre.create_line(self.xdebut,self.yfin,self.xfin,self.ydebut,fill="black")
 
@@ -753,8 +738,7 @@ def switch_turn():     #change le tour de jeu
     if player_turn==False:
         player_turn=True
     else:
-        player_turn=False
-        
+        player_turn=False       
 #======================== Info box ==================================
 # Ces informations serviront à informer l'utilisateur des instructions, de la manipulation de l'interface et d'erreurs éventuelles de saisies 
 information=tk.Canvas(master, width=300, height=300)  #définition d'une partie de canvas dédié aux informations pour l'utilisateur
@@ -798,8 +782,8 @@ def all_placed():
         return True
     else:
         return False
-#Bouton2 = tk.Button(master, text = 'Placer bateau2', command = placer_boats).grid(row=2, column=1)
+
 ai = tk.Button(master, text = 'ai', command = aiattack).grid(row=0, column=1)
-#play=tk.Button(master, text="Jouer", width="10", height="2", command=gamemode).grid(column=2, row=0)
+
 placeboatsai()
 master.mainloop()
