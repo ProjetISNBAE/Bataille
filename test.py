@@ -749,6 +749,36 @@ info=information.create_text(150,20, text='Select boats above to begin.') #text 
 def info(): #fonction qui modifie le panneau pour apporter plus d'instructions sur le jeu
     information.itemconfigure(1, text='Use arrow keys to modify the orientation of the boat. \n Place boats on the bottom grid, this one is yours.')
 #====================================================================
+barres=tk.Canvas(master, height=150,width=600)
+barres.grid(row=0,column=0)
+def calcul_vie(liste):
+    longueur_totale=0
+    vie=0
+    for i in range(len(liste)):
+        longueur_totale=longueur_totale+liste[i].length
+        vie=vie+(liste[i].bateau_en_vie(liste)*liste[i].length)
+        #print('vie=',vie,'longueur totale=',longueur_totale)
+    if longueur_totale!=0:
+        #print(vie/longueur_totale*100)
+        return vie/longueur_totale*100
+        
+class barre():
+    def __init__(self, x):
+        self.bar=barres.create_rectangle(0,0,300,50, fill='blue')
+        self.draw()
+        
+    def draw(self):
+        #barres.delete(self.bar)
+        print(calcul_vie(ships))
+        if calcul_vie(ships)!=None:
+            self.bar=barres.create_rectangle(0,0,3*calcul_vie(ships),50, fill='blue')
+
+barre_joueur=barre(0)
+    
+#====================================================================
+
+
+
 vies=tk.Canvas(master, width=300, height=300)
 vies.grid(column=2,row=0)
 
