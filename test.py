@@ -131,7 +131,7 @@ class case: #création des cases du terrainde jeu
                 if adjacent_case.bateau==True:
                     return False
             except:
-                    IndexError
+                pass
         return True
                 
         
@@ -240,14 +240,15 @@ class intelligence_artificielle: #classe pour casesadversaire (voir classe case)
             
             
     def check_surrounding(self): #check s'il n'y a pas de bateau autour et sur sa position
-        xcoordinate=[-1,0,0,+1]
+        xcoordinate=[-1,0,0,+1] 
         ycoordinate=[0,+1,-1,0]
         for i in range(4):
             try:
-                if caseadversaire[(self.x+xcoordinate[i])][self.y+(ycoordinate[i])].bateau==True:
+                adjacent_case=cases[(self.x+xcoordinate[i])][self.y+(ycoordinate[i])]
+                if adjacent_case.bateau==True:
                     return False
             except:
-                    IndexError
+                pass
         return True
             
     def draw(self):
