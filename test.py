@@ -19,7 +19,7 @@ userhits=0
 
 orientation='N' #Orientation par défaut des bateaux à placer
 game_mode=False #sépare le moment de placement des bateaux du moment de jeu 
-player_turn=False  #Variable booléenne qui vérifie que assure le respect du tour de jeu 
+player_turn=False  #Variable booléenne qui assure le respect du tour de jeu 
 boat_sunk=False #Variable booléenne qui indique si le bateau en question est coulé ou non
 #==============================================================================
 
@@ -75,17 +75,17 @@ class case: #création des cases du terrainde jeu
             self.case_attaquee=True
             self.draw()  
     
-    def color(self): #fonction renvoyant la couleur que la case doit avoir
-        global player_turn
+    def color(self): #fonction qui vérifie l'état de la case et apporte des modifications de couleurs selon cet état
+        global player_turn #la fonction assure également le respect des tours de jeu
         couleur="white" #la case est blanche par defaut
         if self.bateau==True: #si un bateau est présent, elle est grise
             couleur="grey"
         if self.case_attaquee and self.bateau: #si un bateau est présent et qu'elle est attaquée, elle est rouge
             couleur="red"
-            player_turn=False
+            player_turn=False #si une case du jouer est attaqué est que celle-ci contient un bateau, l'intelligence artificielle rejoue
         elif self.case_attaquee==True and self.bateau==False: #si elle est attaquée sans la présence du bateau, elle est bleue
             couleur="blue"
-            player_turn=True
+            player_turn=True #si une case est attaqué est que celle-ci est vide, c'est au tour de l'utilisateur
         return couleur
     
     def click(self, event): #fonction se lançant lorsqu'on clique sur la case, servant à placer les bateaux
@@ -252,9 +252,10 @@ class intelligence_artificielle: #classe pour casesadversaire (voir classe case)
         ycoordinate=[0,+1,-1,0]
         for i in range(4):
             try:
-                if caseadversaire[(self.x+xcoordinate[i])][self.y+(ycoordinate[i])].bateau==True:
+                adjacent_case=cases[(self.x+xcoordinate[i])][self.y+(ycoordinate[i])]
+                if adjacent_case.bateau==True:
                     return False
-            except IndexError:
+            except:
                 pass
         return True
             
@@ -276,12 +277,12 @@ class intelligence_artificielle: #classe pour casesadversaire (voir classe case)
             case.attacked(self)
             #print(self.case_attaquee and self.bateau)
             if self.case_attaquee==True and self.bateau==True:
-                player_turn=True
-                shipsai[quel_bateau_ai(caseadversaire[self.x][self.y])].bateau_sunk(shipsai)
+                player_turn=True #l'utilisateur rejoue si il a touché une case avec un bateau
+                shipsai[quel_bateau_ai(caseadversaire[self.x][self.y])].bateau_sunk(shipsai) #vérifie si un bateau entier a été coulé
             else:
-                player_turn=False
+                player_turn=False # Si l'utilisateur ne touche pas de bateau, ce n'est plus son tour
                 information.itemconfigure(1, text='It is not your turn to play.')
-                cadre.after(300, aiattack)
+                cadre.after(300, aiattack) # délai avant l'attaque de l'intelligence artificielle, le canevas rafraichie au bout d'un certain moment en éxecutant le fonction
         else:
             information.itemconfigure(1, text='It is not your turn to play.')
         actualise()
@@ -375,16 +376,15 @@ def placeboatsai(): #fonction qui place les bateaux des l'ai
    
     for j in range(len(shipsai)):
         for k in range(len(shipsai[j].projection)):
-            while shipsai[j].check_placement(x,y)==False or shipsai[j].projection[k].check_surrounding()==False :    #2ème tant que vérifiant que le bateau qui va ètre placé grace à la liste projection remplise les conditions necessaire
+            while shipsai[j].check_placement(x,y)==False or shipsai[j].projection[k].check_surrounding()==False:    #2ème tant que vérifiant que le bateau qui va ètre placé grace à la liste projection remplise les conditions necessaire
                     shipsai[j].orientation=random_orientation() #donner une orientation, des coordonnées aléatoire
-                    print(shipsai[j].check_placement(x,y))
                     del shipsai[j].projection[:]
                     x,y=rancoord()
                     shipsai[j].projection.append([shipsai[j].projet(x,y,caseadversaire)])
                     shipsai[j].projection.pop()
-        print(shipsai[j].projection)    
+            
         shipsai[j].placementai()    #si toutes les conditions sont rempli les bateaux sont placés un par un, pour que les nouveaux bateaux n'interfère pas avec les anciens (qu'ils soit placées au même endroit)
-                           
+
                                 
         
 def aiattack():
