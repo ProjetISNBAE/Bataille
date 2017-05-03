@@ -375,15 +375,16 @@ def placeboatsai(): #fonction qui place les bateaux des l'ai
    
     for j in range(len(shipsai)):
         for k in range(len(shipsai[j].projection)):
-            while shipsai[j].check_placement(x,y)==False or shipsai[j].projection[k].check_surrounding()==False:    #2ème tant que vérifiant que le bateau qui va ètre placé grace à la liste projection remplise les conditions necessaire
+            while shipsai[j].check_placement(x,y)==False or shipsai[j].projection[k].check_surrounding()==False :    #2ème tant que vérifiant que le bateau qui va ètre placé grace à la liste projection remplise les conditions necessaire
                     shipsai[j].orientation=random_orientation() #donner une orientation, des coordonnées aléatoire
+                    print(shipsai[j].check_placement(x,y))
                     del shipsai[j].projection[:]
                     x,y=rancoord()
                     shipsai[j].projection.append([shipsai[j].projet(x,y,caseadversaire)])
                     shipsai[j].projection.pop()
-            
+        print(shipsai[j].projection)    
         shipsai[j].placementai()    #si toutes les conditions sont rempli les bateaux sont placés un par un, pour que les nouveaux bateaux n'interfère pas avec les anciens (qu'ils soit placées au même endroit)
-
+                           
                                 
         
 def aiattack():
