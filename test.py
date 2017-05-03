@@ -111,6 +111,7 @@ class case: #création des cases du terrainde jeu
                         information.itemconfigure(1, text='Boats can not be adjacent.')
                         environs=False
                         ships.pop() #si on ne peut pas, on enleve le bateau de la liste, car il n'est pas réellement créé
+                        break
                 if environs==True: 
                     if bateau_selectionne.check_placement(self.x, self.y)==False: #on verifie ensuite que le bateau ne sorte pas du cadre
                         information.itemconfigure(1, text='Boat out of area.')
@@ -124,7 +125,7 @@ class case: #création des cases du terrainde jeu
                     information.itemconfigure(1, text='Please select a boat to place.')
         else:
              information.itemconfigure(1, text='You are playing on the other field.')
-            
+             
             
     def check_surrounding(self): #fonction vérifiant que les cases adjacentes ne soient pas des bateaux
         xcoordinate=[-1,0,0,+1] #Mathis cest a toi ca
