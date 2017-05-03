@@ -749,7 +749,7 @@ def calcul_vie(liste): #fonction calculant la "vie" d'un joueur
     vie=0
     for i in range(len(liste)): #pour chaque bateau du joueur, on somme les longueurs et la vie
         longueur_totale=longueur_totale+liste[i].length
-        vie=vie+(liste[i].bateau_en_vie(liste)*liste[i].length
+        vie=vie+(liste[i].bateau_en_vie(liste)*liste[i].length)
     if longueur_totale!=0: #afin d'eviter des erreurs à l'initialisation
         return vie/longueur_totale*100 #on renvoie la vie du joueuer sous forme de pourcentage
         
