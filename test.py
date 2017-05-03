@@ -252,11 +252,9 @@ class intelligence_artificielle: #classe pour casesadversaire (voir classe case)
         ycoordinate=[0,+1,-1,0]
         for i in range(4):
             try:
-                adjacent_case=cases[(self.x+xcoordinate[i])][self.y+(ycoordinate[i])]
-                if adjacent_case.bateau==True:
+                if caseadversaire[(self.x+xcoordinate[i])][self.y+(ycoordinate[i])].bateau==True:
                     return False
-            except:
-                pass
+            except IndexError:
         return True
             
     def draw(self):
