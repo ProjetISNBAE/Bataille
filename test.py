@@ -812,15 +812,16 @@ def all_placed(): # test si tous les bateaux du joueur ont bien été placés.
 
 
 #Création de deux grilles de 10*10 cases                 
-                 
-caseadversaire=[]   
-cases=[]
-for i in range(10):
-    cases.append([])
-    caseadversaire.append([])
-    for j in range(10):
-        cases[i].append(case(i,j))
-        caseadversaire[i].append(intelligence_artificielle(i,j))
-                 
+def creation():                
+    caseadversaire=[]   
+    cases=[]
+    for i in range(10):
+        cases.append([])
+        caseadversaire.append([])
+        for j in range(10):
+            cases[i].append(case(i,j))
+            caseadversaire[i].append(intelligence_artificielle(i,j))
+
+creation()
 placeboatsai()
 master.mainloop()
