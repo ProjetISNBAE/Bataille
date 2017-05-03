@@ -116,7 +116,7 @@ class case: #création des cases du terrainde jeu
                         selectable=True #on rend selectionnables les autres bateaux
                         all_placed() #on regarde si tous les autres bateaux ont été placés
                         actualise() #on actualise les barres de vies, afin qu'elles s'afichent correctement
-            elif aihits!=21 or userhits!=21:: #affichage des messages d'erreur liées aux conditions initiales neccessaires pour un placement.
+            elif aihits!=21 or userhits!=21: #affichage des messages d'erreur liées aux conditions initiales neccessaires pour un placement.
                     information.itemconfigure(1, text='Please select a boat to place.')
         else:
              information.itemconfigure(1, text='You are playing on the other field.')
@@ -209,7 +209,7 @@ class ship: #creation des bateaux
         return level/self.length #renvoie le niveau de vie du bateau par rapport à sa longueur
 
         
-class ai: #classe pour casesadversaire (voir classe case)
+class intelligence_artificielle: #classe pour casesadversaire (voir classe case)
     
     def __init__(self, x, y):   
         self.x=x
@@ -803,7 +803,7 @@ for i in range(10):
     caseadversaire.append([])
     for j in range(10):
         cases[i].append(case(i,j))
-        caseadversaire[i].append(ai(i,j))
+        caseadversaire[i].append(intelligence_artificielle(i,j))
                  
 placeboatsai()
 master.mainloop()
