@@ -197,6 +197,14 @@ class ship: #creation des bateaux
     def cases(self,liste,x,y, liste2): #fonction permettant de rajouter une case à une autre liste
         liste.append(liste2[x][y])
         
+    def bateau_sunk(self, liste):
+        global boat_sunk
+        if self.bateau_en_vie(liste)==0:
+            boat_sunk=True
+            for i in range(self.length):
+                self.projection[i].draw()
+            boat_sunk=False
+            
     def bateau_en_vie(self, liste): #fonction permettant d'avoir le niveau de vie d'un bateau
         level=0 
         for i in range(self.length): #pour chaque case du bateau, on regarde si elle est attaquée, si non, on augmente "sa vie" de 1
@@ -270,6 +278,7 @@ class intelligence_artificielle: #classe pour casesadversaire (voir classe case)
             #print(self.case_attaquee and self.bateau)
             if self.case_attaquee==True and self.bateau==True:
                 player_turn=True
+                shipsai[quel_bateau_ai(caseadversaire[self.x][self.y])].bateau_sunk(shipsai)
             else:
                 player_turn=False
                 information.itemconfigure(1, text='It is not your turn to play.')
@@ -569,6 +578,7 @@ def aiattack():
     
         if hit()==True:             #si un bateau a été touché par l'ia (voir hit())
             cadre.after(300, aiattack) #attendre 300ms, puis executer aiattack()
+            ships[quel_bateau(cases[casebatx][casebaty])].bateau_sunk(ships)
         else:
             player_turn==True       #sinon c'est au tour du joueur
             information.itemconfigure(1, text='It is your turn to play.')
@@ -784,6 +794,15 @@ def quel_bateau(case): #fonction permettant de "parler" au bateau cliqué, en te
         for j in range(len(ships[i].endroits)):
             if ships[i].endroits[j]==case:
                 return i #renvoi de l'indice du bateau dans la liste, permettant de lui faire référence plus tard.
+
+def quel_bateau_ai(ai):
+    for i in range(len(shipsai)):
+        for j in range(len(shipsai[i].projection)):
+            try:
+                if type(shipsai[i].projection[j])==intelligence_artificielle:
+                    return i
+            except:
+                TypeError
             
 def all_placed(): # test si tous les bateaux du joueur ont bien été placés.
     if compteur_b5==0 and compteur_b4==0 and compteur_b3==0 and compteur_b2==0:
@@ -808,3 +827,4 @@ for i in range(10):
                  
 placeboatsai()
 master.mainloop()
+
