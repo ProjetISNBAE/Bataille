@@ -7,7 +7,7 @@ largeurcadre=400
 l=largeurcadre/11
 h=hauteurcadre/11
 #==============================================================================
-sens="none"
+sens="none"        #initialisation de variables et listes utilisées plus tard
 direction="none"
 casebatx=0
 casebaty=0
@@ -285,6 +285,7 @@ class ai: #classe pour casesadversaire (voir classe case)
             player_turn=False
         return couleur
         
+#================== Fonctions Utililes à l'intellingence artificielle ================================
 def rancoord(): #renvoie 2 chiffres random
     a=random.randrange(0,10,1)
     b=random.randrange(0,10,1)
@@ -310,40 +311,9 @@ def random_orientation(): #génère une orientation alèatoire (nord, sud, est, 
     elif random==4:
         orientation="W" 
     return orientation
-    
-def placeboatsai(): #fonction qui place les bateaux des l'ai
-    global shipsai  #liste contenants les objets bateaux de l'ai (future liste)
-    global caseadversaire   #liste des objets cases de l'ai
-    boatlengths=[5,4,3,3,2,2,2] #nombre et longueur des bateaux
-
-    for i in range(len(boatlengths)): #creation de bateux et de projection aléatoire pour pouvoir vérifier toute les conditions dans la 2ème tant que
-        orientation=random_orientation()    #creation d'une orientaion aléatoire
-        shipsai.append(ship(boatlengths[i],orientation))    #création des bateaux et les mettre dans la liste shipsai
-        x,y=rancoord()
-        shipsai[i].projection.append(shipsai[i].projet(x,y,caseadversaire)) #ajouter une projection aléatoire à la liste attribut des bateaux
-        for l in range(boatlengths[i]):       
-            while  shipsai[i].check_placement(x,y)==False:  #verifier qu'elle soit bien dans le cadre
-                del shipsai[i].projection[:]
-                x,y=rancoord()
-                shipsai[i].projection.append([shipsai[i].projet(x,y,caseadversaire)])
-        shipsai[i].projection.pop()
-   
-    for j in range(len(shipsai)):
-        for k in range(len(shipsai[j].projection)):
-            while shipsai[j].check_placement(x,y)==False or shipsai[j].projection[k].check_surrounding()==False:    #2ème tant que vérifiant que le bateau qui va ètre placé grace à la liste projection remplise les conditions necessaire
-                    shipsai[j].orientation=random_orientation() #donner une orientation, des coordonnées aléatoire
-                    del shipsai[j].projection[:]
-                    x,y=rancoord()
-                    shipsai[j].projection.append([shipsai[j].projet(x,y,caseadversaire)])
-                    shipsai[j].projection.pop()
-            
-        shipsai[j].placementai()    #si toutes les conditions sont rempli les bateaux sont placés un par un, pour que les nouveaux bateaux n'interfère pas avec les anciens (qu'ils soit placées au même endroit)
-
-                                
         
 
-       
-    
+      
 
 def hit():       #détermine si un bateau a été touché par l'ai et le score du joueur et de l'ai
     global userhits #nombre de cases bateaux touché par le joueur
@@ -374,7 +344,38 @@ def winner():   #déterminer le gagnant
         information.itemconfigure(1, text='You won.') #indiquation qu'il a gagné
         return False
     
+#================== Intelligence Artificielle ================================
 
+def placeboatsai(): #fonction qui place les bateaux des l'ai
+    global shipsai  #liste contenants les objets bateaux de l'ai (future liste)
+    global caseadversaire   #liste des objets cases de l'ai
+    boatlengths=[5,4,3,3,2,2,2] #nombre et longueur des bateaux
+
+    for i in range(len(boatlengths)): #creation de bateux et de projection aléatoire pour pouvoir vérifier toute les conditions dans la 2ème tant que
+        orientation=random_orientation()    #creation d'une orientaion aléatoire
+        shipsai.append(ship(boatlengths[i],orientation))    #création des bateaux et les mettre dans la liste shipsai
+        x,y=rancoord()
+        shipsai[i].projection.append(shipsai[i].projet(x,y,caseadversaire)) #ajouter une projection aléatoire à la liste attribut des bateaux
+        for l in range(boatlengths[i]):       
+            while  shipsai[i].check_placement(x,y)==False:  #verifier qu'elle soit bien dans le cadre
+                del shipsai[i].projection[:]
+                x,y=rancoord()
+                shipsai[i].projection.append([shipsai[i].projet(x,y,caseadversaire)])
+        shipsai[i].projection.pop()
+   
+    for j in range(len(shipsai)):
+        for k in range(len(shipsai[j].projection)):
+            while shipsai[j].check_placement(x,y)==False or shipsai[j].projection[k].check_surrounding()==False:    #2ème tant que vérifiant que le bateau qui va ètre placé grace à la liste projection remplise les conditions necessaire
+                    shipsai[j].orientation=random_orientation() #donner une orientation, des coordonnées aléatoire
+                    del shipsai[j].projection[:]
+                    x,y=rancoord()
+                    shipsai[j].projection.append([shipsai[j].projet(x,y,caseadversaire)])
+                    shipsai[j].projection.pop()
+            
+        shipsai[j].placementai()    #si toutes les conditions sont rempli les bateaux sont placés un par un, pour que les nouveaux bateaux n'interfère pas avec les anciens (qu'ils soit placées au même endroit)
+
+                                
+        
 def aiattack():
     global sens #par default sens="none"
     global direction #par default direction="none"
@@ -573,7 +574,6 @@ def aiattack():
     else:
         information.itemconfigure(1, text='It is your turn to play.')
     actualise()
-
         
 
       
