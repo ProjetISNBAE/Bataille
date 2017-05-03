@@ -255,6 +255,7 @@ class intelligence_artificielle: #classe pour casesadversaire (voir classe case)
                 if caseadversaire[(self.x+xcoordinate[i])][self.y+(ycoordinate[i])].bateau==True:
                     return False
             except IndexError:
+                pass
         return True
             
     def draw(self):
