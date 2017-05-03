@@ -76,21 +76,17 @@ class case: #création des cases du terrainde jeu
             self.draw()  
     
     def color(self): #fonction renvoyant la couleur que la case doit avoir
+        global player_turn
         couleur="white" #la case est blanche par defaut
         if self.bateau==True: #si un bateau est présent, elle est grise
             couleur="grey"
         if self.case_attaquee and self.bateau: #si un bateau est présent et qu'elle est attaquée, elle est rouge
             couleur="red"
+            player_turn=False
         elif self.case_attaquee==True and self.bateau==False: #si elle est attaquée sans la présence du bateau, elle est bleue
             couleur="blue"
-        return couleur
-    
-    def turn(self): #fonction qui assure que le tour de jeu soit respecté en fonction du resultat de l'attaque
-        global player_turn 
-        if self.case_attaquee and self.bateau:  #Si l'intélligence artificielle touche un bateau, il rejoue
-            player_turn=False
-        elif self.case_attaquee==True and self.bateau==False: #Si il y a une attaque sans toucher de bateau, c'est au tour de l'utilisateur
             player_turn=True
+        return couleur
     
     def click(self, event): #fonction se lançant lorsqu'on clique sur la case, servant à placer les bateaux
         global game_mode
@@ -289,15 +285,9 @@ class intelligence_artificielle: #classe pour casesadversaire (voir classe case)
         elif self.case_attaquee==True and self.bateau==False:
             couleur="blue"
         return couleur
+       
         
-    def turn(self): #fonction qui assure que le tour de jeu soit respecté en fonction du resultat de l'attaque
-        global player_turn 
-        if self.case_attaquee and self.bateau:  #Si l'utilisateur touche un bateau, il rejoue
-            player_turn=True
-        elif self.case_attaquee==True and self.bateau==False: #Si il y a une attaque sans toucher de bateau, c'est au tour de l'intelligence artificielle
-            player_turn=False
-        
-#================== Fonctions Utililes à l'intellingence artificielle ================================
+#================== Fonctions Utiles à l'intellingence artificielle ================================
 def rancoord(): #renvoie 2 chiffres random
     a=random.randrange(0,10,1)
     b=random.randrange(0,10,1)
