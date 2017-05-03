@@ -767,14 +767,16 @@ class barre(): #creation des barres de vie
         self.bar=barres.create_rectangle(self.x,0,self.x+300,50, fill='blue') #la barre elle-même
         self.name=nom
         self.liste=liste
+        self.texte=barres.create_text(self.x+150,25, text=str(self.name)+': '+str(calcul_vie(self.liste))+'%')
         self.draw()
         
         
     def draw(self): #dessin de la barre
         barres.delete(self.bar) #on efface la barre précedente, pour pas que les barres se superposent
+        barres.delete(self.texte)
         if calcul_vie(self.liste)!=None:#pour eviter encore des erreurs
             self.bar=barres.create_rectangle(self.x,0,self.x+3*calcul_vie(self.liste),50, fill='blue') #recréation de la barre, cette fois en fonction du pourcentage de vie
-            barres.create_text(self.x+150,25, text=str(self.name)+': '+str(int(calcul_vie(self.liste)))+'%') #affichage de la valeur numérique pour plus de clarté
+            self.texte=barres.create_text(self.x+150,25, text=str(self.name)+': '+str(int(calcul_vie(self.liste)))+'%') #affichage de la valeur numérique pour plus de clarté
 
 barre_joueur=barre(0, ships, 'Joueur')
 barre_ai=barre(350, shipsai, 'AI')
