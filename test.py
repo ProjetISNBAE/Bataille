@@ -128,14 +128,13 @@ class case: #création des cases du terrainde jeu
              
             
     def check_surrounding(self): #fonction vérifiant que les cases adjacentes ne soient pas des bateaux
-        xcoordinate=[-1,0,0,+1] #Mathis cest a toi ca
+        xcoordinate=[-1,0,0,+1] #liste des coordonées à tester (en combinaison avec ycoordinate)
         ycoordinate=[0,+1,-1,0]
         for i in range(4):
-            try:
-                adjacent_case=cases[(self.x+xcoordinate[i])][self.y+(ycoordinate[i])]
-                if adjacent_case.bateau==True:
-                    return False
-            except:
+            try:            #la fonction try evite les erreurs d'index
+                if cases[(self.x+xcoordinate[i])][self.y+(ycoordinate[i])].bateau==True: #check un par un si la case à coté possède un bateau
+                    return False            #si ceci est le cas, la fonction renvoit False
+            except IndexError:
                 pass
         return True
                 
@@ -802,7 +801,6 @@ def all_placed(): # test si tous les bateaux du joueur ont bien été placés.
     else:
         return False
 
-ai = tk.Button(master, text = 'ai', command = aiattack).grid(row=1, column=1)
 
 #Création de deux grilles de 10*10 cases                 
                  
