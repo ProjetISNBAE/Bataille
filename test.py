@@ -266,16 +266,19 @@ class intelligence_artificielle: #classe pour casesadversaire (voir classe case)
         
     def click(self, event):
         global player_turn
+        print(player_turn)
+        if userhits==21 or aihits==21:
+            return
         if player_turn==True:
             case.attacked(self)
             #print(self.case_attaquee and self.bateau)
-            if self.case_attaquee and self.bateau:
+            if self.case_attaquee==True and self.bateau==True:
                 player_turn=True
-            elif userhits!=21 and aihits!=21:
+            else:
                 player_turn=False
                 information.itemconfigure(1, text='It is not your turn to play.')
                 cadre.after(300, aiattack)
-        elif userhits!=21 and aihits!=21:
+        else:
             information.itemconfigure(1, text='It is not your turn to play.')
         actualise()
         
