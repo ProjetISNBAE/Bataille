@@ -107,7 +107,7 @@ class case: #création des cases du terrainde jeu
                 bateau_selectionne=ships[len(ships)-1] #le bateau lequel on place est donc le dernier élément de la liste à l'indice (longueur-1)
                 bateau_selectionne.projet(self.x, self.y, cases) #on crée une liste de cases où on veut placer le bateau
                 for i in range(len(bateau_selectionne.projection)): #pour chaque case de la projection on va tester si le bateau peut etre placé légalement, c'est a dire pas directement à coté d'un autre
-                    if bateau_selectionne.projection[i].check_surrounding()==False:
+                    if bateau_selectionne.projection[i].check_surrounding()==False and bateau_selectionne.check_placement(self.x, self.y)!=False:
                         information.itemconfigure(1, text='Boats can not be adjacent.')
                         environs=False
                         ships.pop() #si on ne peut pas, on enleve le bateau de la liste, car il n'est pas réellement créé
