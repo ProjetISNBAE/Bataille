@@ -387,14 +387,13 @@ def aiattack():
     global aihits       #le nb de case ou se trouvait un bateau touché par l'ia
     if winner()==False: #si aucun des deux joueurs n'a touché les 21 positions ou se trouvent les bateaux
         return None
-    if player_turn==False and game_mode==True:   #si c'est à l'ia de jouer et que les bateaux sont tous placés                                #pour éviter les erreurs d'index il y aura de nombreux fonction try
+    if player_turn==False and game_mode==True:   #si c'est à l'ia de jouer et que les bateaux sont tous placés                          
         if sens=="vertical":                #si le sens est connu et qu'il est "verticale"
-            essai=False
             if ships[quel_bateau(cases[casebatx][casebaty])].bateau_en_vie(ships)== 0:  #si le bateau est coulé, l'ia attaque aléatoirement a nouveau
                 sens="none"
                 direction="none"
-
-                
+            else:
+                essai=False
                 while essai==False:
                     if direction=="haut":           #si la direction (qui est déterminer en dessous) est connue l'ia attaque toutes les cases vers le "haut"jusqu a ce qu le bateau est coulé
                         while essai==False:
@@ -429,7 +428,7 @@ def aiattack():
                             essai=True
                             if cases[casebatx][casebaty+3].bateau==False:
                                 direction="haut"
-
+    
                         elif cases[casebatx][casebaty+4].case_attaquee==False:
                             cases[casebatx][casebaty+4].attacked()
                             essai=True
@@ -441,12 +440,9 @@ def aiattack():
         
         if sens=="horizontal": #si le sens est connu et qu'il est "horiontal"
             essai=False
-            try:
-                if ships[quel_bateau(cases[casebatx][casebaty])].bateau_en_vie(ships)== 0:  #si le bateau est coulé, l'ia attaque aléatoirement a nouveau
-                    sens="none"
-                    direction="none"
-            except TypeError:
-                pass
+            if ships[quel_bateau(cases[casebatx][casebaty])].bateau_en_vie(ships)== 0:  #si le bateau est coulé, l'ia attaque aléatoirement a nouveau
+                sens="none"
+                direction="none"
             else:
                 while essai==False:
                     try:
