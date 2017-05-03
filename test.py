@@ -247,7 +247,7 @@ class intelligence_artificielle: #classe pour casesadversaire (voir classe case)
             self.draw()
             
             
-    def check_surrounding(self): #check s'il n'y a pas de bateau autour et sur sa position
+    def check_surrounding(self): #check s'il n'y a pas de bateau autour et sur sa position, meme methode que dans la classe case
         xcoordinate=[-1,0,0,+1] 
         ycoordinate=[0,+1,-1,0]
         for i in range(4):
@@ -269,12 +269,11 @@ class intelligence_artificielle: #classe pour casesadversaire (voir classe case)
         
     def click(self, event):
         global player_turn
-        print(player_turn)
         if userhits==21 or aihits==21:
             return
         if player_turn==True:
             case.attacked(self)
-            #print(self.case_attaquee and self.bateau)
+
             if self.case_attaquee==True and self.bateau==True:
                 player_turn=True #l'utilisateur rejoue si il a touché une case avec un bateau
                 shipsai[quel_bateau_ai(caseadversaire[self.x][self.y])].bateau_sunk(shipsai) #vérifie si un bateau entier a été coulé
@@ -376,12 +375,10 @@ def placeboatsai(): #fonction qui place les bateaux des l'ai
         for k in range(len(shipsai[j].projection)):
             while shipsai[j].check_placement(x,y)==False or shipsai[j].projection[k].check_surrounding()==False :    #2ème tant que vérifiant que le bateau qui va ètre placé grace à la liste projection remplise les conditions necessaire
                     shipsai[j].orientation=random_orientation() #donner une orientation, des coordonnées aléatoire
-                    print(shipsai[j].check_placement(x,y))
                     del shipsai[j].projection[:]
                     x,y=rancoord()
                     shipsai[j].projection.append([shipsai[j].projet(x,y,caseadversaire)])
                     shipsai[j].projection.pop()
-        print(shipsai[j].projection)    
         shipsai[j].placementai()    #si toutes les conditions sont rempli les bateaux sont placés un par un, pour que les nouveaux bateaux n'interfère pas avec les anciens (qu'ils soit placées au même endroit)
                            
                                 
@@ -507,7 +504,6 @@ def aiattack():
             test_droite=False
             test_haut=False
             test_bas=False 
-            print (casebatx, casebaty)
             
             if casebatx==0:
                 test_gauche=True
