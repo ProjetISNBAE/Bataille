@@ -68,9 +68,7 @@ class case: #création des cases du terrainde jeu
         if self.bateau==False:
             self.bateau=True
             self.draw()
-        else:
-            self.bateau=False
-            self.draw()
+
       
     def attacked(self): #idem, mais pour la propriété "la case a-t-elle étée attaquée"
         if self.case_attaquee==False:
