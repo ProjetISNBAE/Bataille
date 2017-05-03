@@ -116,7 +116,7 @@ class case: #création des cases du terrainde jeu
                         selectable=True #on rend selectionnables les autres bateaux
                         all_placed() #on regarde si tous les autres bateaux ont été placés
                         actualise() #on actualise les barres de vies, afin qu'elles s'afichent correctement
-            else: #affichage des messages d'erreur liées aux conditions initiales neccessaires pour un placement.
+            elif aihits!=21 or userhits!=21:: #affichage des messages d'erreur liées aux conditions initiales neccessaires pour un placement.
                     information.itemconfigure(1, text='Please select a boat to place.')
         else:
              information.itemconfigure(1, text='You are playing on the other field.')
